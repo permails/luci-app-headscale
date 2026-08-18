@@ -4,6 +4,15 @@ OpenWrt LuCI modern management application for the [Headscale](https://github.co
 
 `luci-app-headscale` provides a fully integrated, high-performance web interface designed for network engineers and system administrators to manage self-hosted Tailscale control networks directly from OpenWrt routers.
 
+> **IMPORTANT: Storage & Flash Endurance Advisory**
+>
+> Headscale operates on an embedded SQLite database engine with frequent write cycles for node state synchronization, peer heartbeat updates, and pre-auth token tracking. Continuous database I/O may accelerate the wear on onboard SPI NOR / NAND flash with limited write cycles.
+>
+> **Recommended Deployment Targets:**
+> * **x86_64 / ARM64 Soft Routers & Mini PCs** with SSD / NVMe / eMMC storage.
+> * **Routers with External Storage**: USB flash drives, external SSDs, or conventional HDDs.
+> * Devices configured to store Headscale databases and runtime vaults on persistent, wear-leveled external mount points.
+
 ---
 
 ## Overview & Architecture
