@@ -1,0 +1,1362 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8
+"
+"Project-Id-Version: luci-app-headscale
+"
+
+msgid "(File Sharing SMB)"
+msgstr ""
+
+msgid "(Generated on Save & Apply)"
+msgstr ""
+
+msgid "(Remote Desktop RDP)"
+msgstr ""
+
+msgid "(SSH: 22)"
+msgstr ""
+
+msgid "(Web HTTP/HTTPS)"
+msgstr ""
+
+msgid "+ Add Rule"
+msgstr ""
+
+msgid "+ Add Rule and Apply"
+msgstr ""
+
+msgid "-- Custom Port Numbers --"
+msgstr ""
+
+msgid "-- Custom Tag / Group / Subnet --"
+msgstr ""
+
+msgid "-- Custom Tag / Subnet / IP --"
+msgstr ""
+
+msgid "1. Source (Who initiates traffic)"
+msgstr ""
+
+msgid "1. Source Devices (Who initiates)"
+msgstr ""
+
+msgid "100 lines"
+msgstr ""
+
+msgid "1000 lines"
+msgstr ""
+
+msgid "2. Target (Destination device/subnet)"
+msgstr ""
+
+msgid "2. Target Scope (Allowed target)"
+msgstr ""
+
+msgid "200 lines"
+msgstr ""
+
+msgid "3. Service / Ports (Allowed ports)"
+msgstr ""
+
+msgid "50 lines"
+msgstr ""
+
+msgid "500 lines"
+msgstr ""
+
+msgid "ACCEPT"
+msgstr ""
+
+msgid "ACL Policy"
+msgstr ""
+
+msgid "ACL policy updated successfully."
+msgstr ""
+
+msgid "ALL"
+msgstr ""
+
+msgid "Absolute path to custom TLS certificate file (.crt / .pem). Leave empty to use system certificate."
+msgstr ""
+
+msgid "Absolute path to custom TLS private key file (.key). Leave empty to use system key."
+msgstr ""
+
+msgid "Access Control Rules"
+msgstr ""
+
+msgid "Action"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Active & Historical Pre-Auth Keys"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Add New Access Rule"
+msgstr ""
+
+msgid "Address and port to bind the Headscale HTTP server."
+msgstr ""
+
+msgid "Address for Prometheus metrics endpoint (/metrics). Leave empty to disable."
+msgstr ""
+
+msgid "Address for internal CLI and gRPC communications."
+msgstr ""
+
+msgid "Admin / Router Only (autogroup:admin)"
+msgstr ""
+
+msgid "Admin Devices (autogroup:admin)"
+msgstr ""
+
+msgid "Advanced Feature"
+msgstr ""
+
+msgid "Advanced Networking Scenarios"
+msgstr ""
+
+msgid "Advertise local home/office subnet so remote devices can access printers, NAS and servers without installing Tailscale on each device."
+msgstr ""
+
+msgid "All Connected Devices (Allow Any Device)"
+msgstr ""
+
+msgid "All Connected Devices (Any Target)"
+msgstr ""
+
+msgid "All Devices (*)"
+msgstr ""
+
+msgid "All Ports & Services (Full Access - Recommended)"
+msgstr ""
+
+msgid "All Ports (*)"
+msgstr ""
+
+msgid "All Target Devices (*)"
+msgstr ""
+
+msgid "All Targets & All Ports (*:*)"
+msgstr ""
+
+msgid "All available"
+msgstr ""
+
+msgid "Allow"
+msgstr ""
+
+msgid "Allow ["
+msgstr ""
+
+msgid "Allow all connected devices to communicate on all ports."
+msgstr ""
+
+msgid "Allow enrolling multiple devices with this single key."
+msgstr ""
+
+msgid "Android / HarmonyOS"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Apply Routes"
+msgstr ""
+
+msgid "Applying..."
+msgstr ""
+
+msgid "Approve Subnet Routes"
+msgstr ""
+
+msgid "Are you sure you want to clear the Headscale log entries?"
+msgstr ""
+
+msgid "Are you sure you want to delete Rule #"
+msgstr ""
+
+msgid "Are you sure you want to delete node: %s? This action cannot be undone."
+msgstr ""
+
+msgid "Are you sure you want to delete user: "
+msgstr ""
+
+msgid "Are you sure you want to delete user: %s? This will also delete all associated nodes."
+msgstr ""
+
+msgid "Are you sure you want to expire and disconnect node: %s?"
+msgstr ""
+
+msgid "Are you sure you want to expire node: "
+msgstr ""
+
+msgid "Are you sure you want to permanently delete node: "
+msgstr ""
+
+msgid "Are you sure you want to revoke this pre-auth key?"
+msgstr ""
+
+msgid "Auto Refresh (3s)"
+msgstr ""
+
+msgid "Auto Scroll"
+msgstr ""
+
+msgid "Auto Update Public DERP Maps"
+msgstr ""
+
+msgid "Auto-remove device registration from server once device goes offline."
+msgstr ""
+
+msgid "Auto-use System Web Certificate (uhttpd / Nginx)"
+msgstr ""
+
+msgid "Automated Script Login"
+msgstr ""
+
+msgid "Automatically load system web server certificate when HTTPS is used."
+msgstr ""
+
+msgid "Automatically open WAN firewall port (TCP %s) to allow external devices to connect."
+msgstr ""
+
+msgid "Automatically register node hostnames as reachable DNS domain names."
+msgstr ""
+
+msgid "BLOCKED"
+msgstr ""
+
+msgid "Base Domain"
+msgstr ""
+
+msgid "Behind ISP Modem (Secondary Router)"
+msgstr ""
+
+msgid "Belongs to User"
+msgstr ""
+
+msgid "Belongs to User:"
+msgstr ""
+
+msgid "CLOSED / BLOCKED"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Clear Logs"
+msgstr ""
+
+msgid "Click "Create Pre-Auth Key", select your user, check "Reusable" so all your family devices can use the same key, and click Create. Copy the generated key."
+msgstr ""
+
+msgid "Click to manage users"
+msgstr ""
+
+msgid "Client Platform Connection Guide"
+msgstr ""
+
+msgid "Client Setup Guide"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Close Firewall Port"
+msgstr ""
+
+msgid "Close WAN firewall port for Headscale?"
+msgstr ""
+
+msgid "Command / Server URL"
+msgstr ""
+
+msgid "Command copied to clipboard."
+msgstr ""
+
+msgid "Common Network Scenarios & Port Forwarding"
+msgstr ""
+
+msgid "Configuration Steps"
+msgstr ""
+
+msgid "Configure Headscale coordination server options, IP allocation, MagicDNS, and DERP relays."
+msgstr ""
+
+msgid "Configuring advanced networking capabilities such as subnet routing and default exit gateways."
+msgstr ""
+
+msgid "Configuring firewall rules and reloading..."
+msgstr ""
+
+msgid "Copied!"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
+msgid "Copy Command"
+msgstr ""
+
+msgid "Copy Key"
+msgstr ""
+
+msgid "Copy URL"
+msgstr ""
+
+msgid "Copy prefix"
+msgstr ""
+
+msgid "Create New Pre-Auth Key"
+msgstr ""
+
+msgid "Create New User"
+msgstr ""
+
+msgid "Create Pre-Auth Key"
+msgstr ""
+
+msgid "Create User"
+msgstr ""
+
+msgid "Create and manage pre-authentication keys for unattended or automated client device enrollment."
+msgstr ""
+
+msgid "Create your first user above to start managing devices and generating authentication keys."
+msgstr ""
+
+msgid "Created At"
+msgstr ""
+
+msgid "Custom DNS search domains pushed to clients."
+msgstr ""
+
+msgid "Custom IP, Subnet or Tag..."
+msgstr ""
+
+msgid "Custom Port(s)..."
+msgstr ""
+
+msgid "Custom TLS Certificate File"
+msgstr ""
+
+msgid "Custom TLS Private Key File"
+msgstr ""
+
+msgid "Custom User or Tag..."
+msgstr ""
+
+msgid "DERP Relay"
+msgstr ""
+
+msgid "DISABLED"
+msgstr ""
+
+msgid "Debug"
+msgstr ""
+
+msgid "Debug (Detailed)"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Delete Node"
+msgstr ""
+
+msgid "Delete User"
+msgstr ""
+
+msgid "Delete failed: %s"
+msgstr ""
+
+msgid "Description & Purpose"
+msgstr ""
+
+msgid "Destination & Ports"
+msgstr ""
+
+msgid "Detected SSL Domain: "
+msgstr ""
+
+msgid "Detected available system certificate: %s (%s)"
+msgstr ""
+
+msgid "Device Registration Command:"
+msgstr ""
+
+msgid "Disable Tailscale SSH"
+msgstr ""
+
+msgid "ENABLED"
+msgstr ""
+
+msgid "ERROR"
+msgstr ""
+
+msgid "Embedded DERP Relay"
+msgstr ""
+
+msgid "Enable Embedded DERP Server"
+msgstr ""
+
+msgid "Enable Headscale Service"
+msgstr ""
+
+msgid "Enable MagicDNS"
+msgstr ""
+
+msgid "Enable Tailscale SSH"
+msgstr ""
+
+msgid "Enable or disable the Headscale background daemon."
+msgstr ""
+
+msgid "Enable the built-in DERP relay server on this router to bypass Symmetric NAT."
+msgstr ""
+
+msgid "Enabling and starting Headscale service..."
+msgstr ""
+
+msgid "Enter a new display name for node ID: "
+msgstr ""
+
+msgid "Enter a new display name for node: %s"
+msgstr ""
+
+msgid "Enter subnet routes to approve for this node (comma-separated):"
+msgstr ""
+
+msgid "Ephemeral"
+msgstr ""
+
+msgid "Ephemeral Key (Auto-remove node on disconnect)"
+msgstr ""
+
+msgid "Ephemeral Node"
+msgstr ""
+
+msgid "Ephemeral Node Inactivity Timeout"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Error (Errors only)"
+msgstr ""
+
+msgid "Error: "
+msgstr ""
+
+msgid "Error: %s"
+msgstr ""
+
+msgid "Example Command"
+msgstr ""
+
+msgid "Examples: 1h, 24h, 720h (30 days), 8760h (1 year)."
+msgstr ""
+
+msgid "Existing Users"
+msgstr ""
+
+msgid "Exit Node (Default Gateway)"
+msgstr ""
+
+msgid "Expiration"
+msgstr ""
+
+msgid "Expire"
+msgstr ""
+
+msgid "Expire Node"
+msgstr ""
+
+msgid "Expire failed: %s"
+msgstr ""
+
+msgid "Expire this node immediately"
+msgstr ""
+
+msgid "Expire this pre-auth key?"
+msgstr ""
+
+msgid "Expired"
+msgstr ""
+
+msgid "Export File"
+msgstr ""
+
+msgid "External DERP Map URLs"
+msgstr ""
+
+msgid "External Tailscale clients can connect directly via WAN IP."
+msgstr ""
+
+msgid "External access blocked"
+msgstr ""
+
+msgid "Failed to copy log."
+msgstr ""
+
+msgid "Failed to create user: "
+msgstr ""
+
+msgid "Failed to create user: %s"
+msgstr ""
+
+msgid "Failed to generate key: %s"
+msgstr ""
+
+msgid "Failed to save policy: "
+msgstr ""
+
+msgid "Failed to update routes: %s"
+msgstr ""
+
+msgid "Filter log entries..."
+msgstr ""
+
+msgid "Filter: "
+msgstr ""
+
+msgid "Follow these 4 simple steps in sequence to complete your private VPN mesh network in 3 minutes."
+msgstr ""
+
+msgid "For devices connecting within home/office local LAN."
+msgstr ""
+
+msgid "For remote mobile devices via DDNS or Public IP (configure in Settings tab)."
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+msgid "General Settings"
+msgstr ""
+
+msgid "Generate Key"
+msgstr ""
+
+msgid "Generate New Pre-Auth Key"
+msgstr ""
+
+msgid "Global Nameservers (DNS)"
+msgstr ""
+
+msgid "Go to Nodes Management"
+msgstr ""
+
+msgid "Go to Pre-Auth Keys"
+msgstr ""
+
+msgid "Go to Settings Tab"
+msgstr ""
+
+msgid "Go to User Management"
+msgstr ""
+
+msgid "Headscale"
+msgstr ""
+
+msgid "Headscale - Access Control Policy (ACL)"
+msgstr ""
+
+msgid "Headscale - Control Server"
+msgstr ""
+
+msgid "Headscale - Pre-Auth Keys"
+msgstr ""
+
+msgid "Headscale - Pre-Authentication Keys"
+msgstr ""
+
+msgid "Headscale - Registered Nodes"
+msgstr ""
+
+msgid "Headscale - Settings"
+msgstr ""
+
+msgid "Headscale - Setup & Configuration Guide"
+msgstr ""
+
+msgid "Headscale - System Logs"
+msgstr ""
+
+msgid "Headscale - Users"
+msgstr ""
+
+msgid "Headscale - Users / Namespaces"
+msgstr ""
+
+msgid "Headscale is an open-source, self-hosted implementation of the Tailscale coordination server."
+msgstr ""
+
+msgid "Headscale requires devices to belong to a user. Enter a simple username (e.g. "admin" or "family") and click "Create User"."
+msgstr ""
+
+msgid "Hold Option (⌥) and click top menu bar Tailscale icon -> "Custom Login Server" -> enter URL."
+msgstr ""
+
+msgid "Hold Shift and right-click Tailscale tray icon -> "Custom Login Server" -> enter URL; or run in CMD/PowerShell."
+msgstr ""
+
+msgid "Home / Local LAN Only"
+msgstr ""
+
+msgid "Home Local LAN (192.168.1.0/24)"
+msgstr ""
+
+msgid "Hostname"
+msgstr ""
+
+msgid "How to configure Server URL and port forwarding based on your home network topology."
+msgstr ""
+
+msgid "Human-friendly region description."
+msgstr ""
+
+msgid "ID"
+msgstr ""
+
+msgid "INFO"
+msgstr ""
+
+msgid "IP Addresses"
+msgstr ""
+
+msgid "IP Allocation"
+msgstr ""
+
+msgid "IP Allocation Strategy"
+msgstr ""
+
+msgid "IPv4 Overlay Prefix"
+msgstr ""
+
+msgid "IPv6 Overlay Prefix"
+msgstr ""
+
+msgid "Info (Standard)"
+msgstr ""
+
+msgid "Install official Tailscale App on your phone/PC, enter your Server URL and Auth Key to connect. Once connected, your device will appear in the "Nodes" tab!"
+msgstr ""
+
+msgid "Install official Tailscale package, then execute login command in root terminal."
+msgstr ""
+
+msgid "Instructions for logging into Headscale across all desktop, mobile and NAS operating systems."
+msgstr ""
+
+msgid "Interval for fetching public DERP updates."
+msgstr ""
+
+msgid "JSON"
+msgstr ""
+
+msgid "JSON (Structured)"
+msgstr ""
+
+msgid "Key & Join Command"
+msgstr ""
+
+msgid "Key / Prefix"
+msgstr ""
+
+msgid "Key Generation Failed"
+msgstr ""
+
+msgid "LAN Server URL"
+msgstr ""
+
+msgid "LAN Server URL copied to clipboard."
+msgstr ""
+
+msgid "LAN Server URL:"
+msgstr ""
+
+msgid "List of URLs to fetch external DERP maps from."
+msgstr ""
+
+msgid "Listen Address"
+msgstr ""
+
+msgid "Live output and connection logs from the Headscale daemon."
+msgstr ""
+
+msgid "Live output, connection logs, and debugging traces from the Headscale daemon."
+msgstr ""
+
+msgid "Local File Sharing (Samba / SMB: 445)"
+msgstr ""
+
+msgid "Local LAN Subnet (192.168.1.0/24)"
+msgstr ""
+
+msgid "Local LAN Subnet Devices (192.168.1.0/24)"
+msgstr ""
+
+msgid "Log"
+msgstr ""
+
+msgid "Log Format"
+msgstr ""
+
+msgid "Log Level"
+msgstr ""
+
+msgid "Log cleared successfully."
+msgstr ""
+
+msgid "Log copied to clipboard."
+msgstr ""
+
+msgid "Log file downloaded: "
+msgstr ""
+
+msgid "Log in to your optical ISP modem admin page -> find "Port Forwarding / Virtual Server" -> forward external TCP 8080 to this OpenWrt router WAN IP."
+msgstr ""
+
+msgid "Logging"
+msgstr ""
+
+msgid "MagicDNS"
+msgstr ""
+
+msgid "MagicDNS Base Domain"
+msgstr ""
+
+msgid "Make sure "Enable Headscale Service" is checked. If you need remote access outside your home, enter your DDNS domain in "Server URL" (e.g. http://myrouter.ddns.net:8080) and check "Open Firewall Port". Default port is 8080."
+msgstr ""
+
+msgid "Manage Headscale users (namespaces) for segmenting registered nodes and generating authentication keys."
+msgstr ""
+
+msgid "Manage all connected Tailscale client devices and machines registered to this Headscale coordination server."
+msgstr ""
+
+msgid "Manage inter-device communication permissions and network access rules."
+msgstr ""
+
+msgid "Metrics Listen Address"
+msgstr ""
+
+msgid "Modified"
+msgstr ""
+
+msgid "My Own Devices Only"
+msgstr ""
+
+msgid "My Own Devices Only (Prevent Cross-User Access)"
+msgstr ""
+
+msgid "N/A"
+msgstr ""
+
+msgid "Network Setup & Port Forwarding Required"
+msgstr ""
+
+msgid "Never"
+msgstr ""
+
+msgid "New Key Generated:"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "No ACL rules defined. Default is Deny All."
+msgstr ""
+
+msgid "No Pre-Auth Keys Found"
+msgstr ""
+
+msgid "No Registered Nodes"
+msgstr ""
+
+msgid "No Users Found"
+msgstr ""
+
+msgid "No custom ACL rules defined (All traffic blocked by default unless rules are added)."
+msgstr ""
+
+msgid "No extra network configuration required. All phones and computers connected to this router Wi-Fi/LAN can register and interconnect directly."
+msgstr ""
+
+msgid "No log entries found."
+msgstr ""
+
+msgid "No matching log entries found."
+msgstr ""
+
+msgid "No pre-auth keys found."
+msgstr ""
+
+msgid "No registered nodes found in this Headscale server."
+msgstr ""
+
+msgid "No system certificate detected in standard paths (/etc/uhttpd.crt)."
+msgstr ""
+
+msgid "No users exist. Please create a user first."
+msgstr ""
+
+msgid "No users found. Create a user above to get started."
+msgstr ""
+
+msgid "Node deleted successfully."
+msgstr ""
+
+msgid "Node expired successfully."
+msgstr ""
+
+msgid "Node is already expired or offline"
+msgstr ""
+
+msgid "Node renamed successfully."
+msgstr ""
+
+msgid "Nodes"
+msgstr ""
+
+msgid "Not saved"
+msgstr ""
+
+msgid "Note: Pre-auth keys are sensitive credentials. Full plaintext keys are displayed in the list upon creation. Please copy and save them immediately."
+msgstr ""
+
+msgid "Novice 4-Step Zero-Barrier Setup Guide"
+msgstr ""
+
+msgid "OFFLINE"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "ONLINE"
+msgstr ""
+
+msgid "OPENED"
+msgstr ""
+
+msgid "OS"
+msgstr ""
+
+msgid "Offline"
+msgstr ""
+
+msgid "One-click Command:"
+msgstr ""
+
+msgid "One-liner Command for Device Registration:"
+msgstr ""
+
+msgid "Online"
+msgstr ""
+
+msgid "Online: "
+msgstr ""
+
+msgid "Only allow nodes registered to this Headscale server to use the relay."
+msgstr ""
+
+msgid "Only devices on local LAN can connect currently."
+msgstr ""
+
+msgid "Open Firewall Port"
+msgstr ""
+
+msgid "Open Tailscale App -> tap top-right 3-dots menu 3 times to unlock Developer Mode -> tap Change Server."
+msgstr ""
+
+msgid "Open WAN firewall port (%s/tcp) to allow external connections?"
+msgstr ""
+
+msgid "Open iOS system Settings -> scroll down to Tailscale -> enable "Custom Server" -> paste server URL."
+msgstr ""
+
+msgid "Options"
+msgstr ""
+
+msgid "Output format for daemon logs."
+msgstr ""
+
+msgid "Output format for log entries."
+msgstr ""
+
+msgid "Overview"
+msgstr ""
+
+msgid "Pass an auth key directly for headless server or Docker container auto-enrollment."
+msgstr ""
+
+msgid "Pending"
+msgstr ""
+
+msgid "Periodically refresh official Tailscale public DERP server maps."
+msgstr ""
+
+msgid "Permission"
+msgstr ""
+
+msgid "Plain Text"
+msgstr ""
+
+msgid "Platform / OS"
+msgstr ""
+
+msgid "Please enter a username."
+msgstr ""
+
+msgid "Please specify allowed port."
+msgstr ""
+
+msgid "Please specify source device."
+msgstr ""
+
+msgid "Please specify target device."
+msgstr ""
+
+msgid "Port: "
+msgstr ""
+
+msgid "Pre-Auth Key Generated"
+msgstr ""
+
+msgid "Pre-Auth Keys"
+msgstr ""
+
+msgid "Pre-Auth Keys allow new Tailscale client machines to join your tailnet automatically without manual web authorization."
+msgstr ""
+
+msgid "Pre-auth key revoked successfully."
+msgstr ""
+
+msgid "Pre-auth keys allow unattended device enrollment. Full plaintext keys and copy buttons will remain accessible in this table."
+msgstr ""
+
+msgid "Program Version"
+msgstr ""
+
+msgid "Quick Options & Presets"
+msgstr ""
+
+msgid "REGISTERED NODES"
+msgstr ""
+
+msgid "RUNNING"
+msgstr ""
+
+msgid "Random (Recommended for security)"
+msgstr ""
+
+msgid "Refresh"
+msgstr ""
+
+msgid "Region ID"
+msgstr ""
+
+msgid "Region Name"
+msgstr ""
+
+msgid "Registered Nodes"
+msgstr ""
+
+msgid "Remote Desktop (RDP/VNC: 3389, 5900)"
+msgstr ""
+
+msgid "Remote Desktop (Windows RDP / VNC: 3389, 5900)"
+msgstr ""
+
+msgid "Remote SSH (22)"
+msgstr ""
+
+msgid "Rename"
+msgstr ""
+
+msgid "Rename Node"
+msgstr ""
+
+msgid "Rename failed: %s"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Reset ACL policy to Default (Allow All Traffic)?"
+msgstr ""
+
+msgid "Reset to Default (Allow All)"
+msgstr ""
+
+msgid "Restart Service"
+msgstr ""
+
+msgid "Restarting Headscale service..."
+msgstr ""
+
+msgid "Restarting Service"
+msgstr ""
+
+msgid "Reusable"
+msgstr ""
+
+msgid "Reusable Key"
+msgstr ""
+
+msgid "Reusable Key (Can authenticate multiple devices)"
+msgstr ""
+
+msgid "Revoke"
+msgstr ""
+
+msgid "Revoke Pre-Auth Key"
+msgstr ""
+
+msgid "Revoke/Expire this pre-auth key?"
+msgstr ""
+
+msgid "Revoked"
+msgstr ""
+
+msgid "Root domain suffix for MagicDNS (e.g. example.com or home.internal)."
+msgstr ""
+
+msgid "Route all remote client internet traffic through this router (Full tunneling for public Wi-Fi security)."
+msgstr ""
+
+msgid "Router Dial-up (PPPoE / Public IP)"
+msgstr ""
+
+msgid "Routes"
+msgstr ""
+
+msgid "Routes updated successfully."
+msgstr ""
+
+msgid "Routes:"
+msgstr ""
+
+msgid "Rows: "
+msgstr ""
+
+msgid "Rule #"
+msgstr ""
+
+msgid "Rule Summary: "
+msgstr ""
+
+msgid "SERVICE STATUS"
+msgstr ""
+
+msgid "SSH Terminal (Port 22)"
+msgstr ""
+
+msgid "SSH into NAS as root, execute Tailscale login command with login-server parameter."
+msgstr ""
+
+msgid "STOPPED"
+msgstr ""
+
+msgid "STUN Listen Address"
+msgstr ""
+
+msgid "Same User Devices (All Ports)"
+msgstr ""
+
+msgid "Same User Devices (autogroup:self)"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Save & Apply"
+msgstr ""
+
+msgid "Saving..."
+msgstr ""
+
+msgid "Scroll to head"
+msgstr ""
+
+msgid "Scroll to tail"
+msgstr ""
+
+msgid "Search Domains"
+msgstr ""
+
+msgid "Search log keywords..."
+msgstr ""
+
+msgid "Select a user above and click "Generate Key" to create your first authentication token."
+msgstr ""
+
+msgid "Sequential (Linear)"
+msgstr ""
+
+msgid "Server URL"
+msgstr ""
+
+msgid "Server URL Setting"
+msgstr ""
+
+msgid "Server URL copied to clipboard."
+msgstr ""
+
+msgid "Service Details & Quick Operations"
+msgstr ""
+
+msgid "Service Inactive"
+msgstr ""
+
+msgid "Service Status"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Setup Guide"
+msgstr ""
+
+msgid "Simply check "Open Firewall Port" in the Settings tab. Remote mobile devices can connect anytime using your DDNS domain name."
+msgstr ""
+
+msgid "Source (Initiator)"
+msgstr ""
+
+msgid "Source Devices (Who)"
+msgstr ""
+
+msgid "Specify comma-separated CIDR routes to approve for node: "
+msgstr ""
+
+msgid "Start Service"
+msgstr ""
+
+msgid "Starting Service"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Step 1: Check Server Settings & Firewall"
+msgstr ""
+
+msgid "Step 2: Create a User (Namespace)"
+msgstr ""
+
+msgid "Step 3: Generate a Pre-Auth Key (Passwordless Login)"
+msgstr ""
+
+msgid "Step 4: Connect Client Devices & Enjoy"
+msgstr ""
+
+msgid "Stop Service"
+msgstr ""
+
+msgid "Stopping Headscale service and disabling in config..."
+msgstr ""
+
+msgid "Stopping Service"
+msgstr ""
+
+msgid "Strategy for assigning new IP addresses to registering nodes."
+msgstr ""
+
+msgid "Subnet Router (LAN Access)"
+msgstr ""
+
+msgid "Subnet Routes:"
+msgstr ""
+
+msgid "Synology / QNAP NAS"
+msgstr ""
+
+msgid "System Overview & Metrics"
+msgstr ""
+
+msgid "TLS / Security"
+msgstr ""
+
+msgid "Tagged/Shared"
+msgstr ""
+
+msgid "Target & Ports (What)"
+msgstr ""
+
+msgid "Target User / Namespace"
+msgstr ""
+
+msgid "Text (Human Readable)"
+msgstr ""
+
+msgid "The URL clients will connect to. Example: http://192.168.1.1:8080 or https://headscale.example.com"
+msgstr ""
+
+msgid "The following Pre-Auth Keys have been generated:"
+msgstr ""
+
+msgid "Timeout after which inactive ephemeral nodes are automatically deleted (e.g. 30m, 1h)."
+msgstr ""
+
+msgid "To Create"
+msgstr ""
+
+msgid "To Delete"
+msgstr ""
+
+msgid "To Expire"
+msgstr ""
+
+msgid "To Revoke"
+msgstr ""
+
+msgid "Trace (Detailed)"
+msgstr ""
+
+msgid "UDP port used for STUN NAT traversal."
+msgstr ""
+
+msgid "USERS (NAMESPACES)"
+msgstr ""
+
+msgid "Undo"
+msgstr ""
+
+msgid "Unique numeric identifier for embedded DERP region."
+msgstr ""
+
+msgid "Unknown"
+msgstr ""
+
+msgid "Update Frequency"
+msgstr ""
+
+msgid "Updating Firewall"
+msgstr ""
+
+msgid "Upstream DNS servers pushed to connected clients (e.g. 223.5.5.5, 119.29.29.29, 1.1.1.1)."
+msgstr ""
+
+msgid "Usage Scenario"
+msgstr ""
+
+msgid "Used"
+msgstr ""
+
+msgid "User"
+msgstr ""
+
+msgid "User created successfully."
+msgstr ""
+
+msgid "User deleted successfully."
+msgstr ""
+
+msgid "User:"
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Username (e.g. alice, work, home)"
+msgstr ""
+
+msgid "Users"
+msgstr ""
+
+msgid "Users (Namespaces)"
+msgstr ""
+
+msgid "Valid"
+msgstr ""
+
+msgid "Verbosity level of Headscale daemon logging (set to Debug for troubleshooting)."
+msgstr ""
+
+msgid "Verbosity level of the system logs."
+msgstr ""
+
+msgid "Verify Clients"
+msgstr ""
+
+msgid "Virtual IPv4 subnet pool allocated to Tailscale nodes. Default 100.64.0.0/10."
+msgstr ""
+
+msgid "Virtual IPv6 subnet pool allocated to Tailscale nodes. Default fd7a:115c:a1e0::/48."
+msgstr ""
+
+msgid "WAN / Public Server URL"
+msgstr ""
+
+msgid "WAN / Public URL:"
+msgstr ""
+
+msgid "WAN FIREWALL"
+msgstr ""
+
+msgid "WAN Firewall"
+msgstr ""
+
+msgid "WAN Firewall Port"
+msgstr ""
+
+msgid "WAN Server URL copied to clipboard."
+msgstr ""
+
+msgid "WARN"
+msgstr ""
+
+msgid "Warn"
+msgstr ""
+
+msgid "Warn (Warnings only)"
+msgstr ""
+
+msgid "Web Browsing (HTTP / HTTPS: 80, 443)"
+msgstr ""
+
+msgid "Web Services (HTTP/HTTPS: 80, 443)"
+msgstr ""
+
+msgid "When client devices (phones, computers, NAS) enroll with a Pre-Auth Key, they will automatically appear here."
+msgstr ""
+
+msgid "Windows File Sharing (SMB: 445)"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "Your new Pre-Auth Key is ready:"
+msgstr ""
+
+msgid "Zero-barrier novice onboarding tutorial and complete step-by-step connection guide for Headscale."
+msgstr ""
+
+msgid "] on ["
+msgstr ""
+
+msgid "] to access ["
+msgstr ""
+
+msgid "gRPC Listen Address"
+msgstr ""
+
+msgid "iOS (iPhone / iPad)"
+msgstr ""
+
+msgid "nodes"
+msgstr ""

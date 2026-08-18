@@ -1,0 +1,1367 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8
+"
+"Project-Id-Version: luci-app-headscale
+"
+"Language: zh_Hans
+"
+
+msgid ""
+msgstr ""
+
+msgid "(File Sharing SMB)"
+msgstr "(文件共享: 445)"
+
+msgid "(Generated on Save & Apply)"
+msgstr "(保存并应用时生成)"
+
+msgid "(Remote Desktop RDP)"
+msgstr "(远程桌面: 3389, 5900)"
+
+msgid "(SSH: 22)"
+msgstr "(SSH 终端: 22)"
+
+msgid "(Web HTTP/HTTPS)"
+msgstr "(网页 Web 服务: 80, 443)"
+
+msgid "+ Add Rule"
+msgstr "+ 添加规则"
+
+msgid "+ Add Rule and Apply"
+msgstr "添加规则并立即生效"
+
+msgid "-- Custom Port Numbers --"
+msgstr "-- 自定义端口号 (如 8080, 9000-9100) --"
+
+msgid "-- Custom Tag / Group / Subnet --"
+msgstr "-- 自定义标签 / 用户组 / 网段 --"
+
+msgid "-- Custom Tag / Subnet / IP --"
+msgstr "-- 自定义标签 / 子网 / IP --"
+
+msgid "1. Source (Who initiates traffic)"
+msgstr "1. 发起源设备（流量发起方）"
+
+msgid "1. Source Devices (Who initiates)"
+msgstr "1. 源设备（发起连接方）"
+
+msgid "100 lines"
+msgstr "100 lines"
+
+msgid "1000 lines"
+msgstr "1000 行"
+
+msgid "2. Target (Destination device/subnet)"
+msgstr "2. 目标设备 / 子网（流量目的方）"
+
+msgid "2. Target Scope (Allowed target)"
+msgstr "2. 目标范围（允许访问谁）"
+
+msgid "200 lines"
+msgstr "200 lines"
+
+msgid "3. Service / Ports (Allowed ports)"
+msgstr "3. 允许放行的服务与端口"
+
+msgid "50 lines"
+msgstr "50 lines"
+
+msgid "500 lines"
+msgstr "500 lines"
+
+msgid "ACCEPT"
+msgstr "ACCEPT"
+
+msgid "ACL Policy"
+msgstr "访问控制策略"
+
+msgid "ACL policy updated successfully."
+msgstr "ACL policy updated successfully."
+
+msgid "ALL"
+msgstr "全部"
+
+msgid "Absolute path to custom TLS certificate file (.crt / .pem). Leave empty to use system certificate."
+msgstr "自定义 TLS 证书文件的绝对路径（.crt / .pem）。留空则自动使用系统证书。"
+
+msgid "Absolute path to custom TLS private key file (.key). Leave empty to use system key."
+msgstr "自定义 TLS 私钥文件的绝对路径（.key）。留空则自动使用系统私钥。"
+
+msgid "Access Control Rules"
+msgstr "Access Control Rules"
+
+msgid "Action"
+msgstr "快捷操作"
+
+msgid "Actions"
+msgstr "操作"
+
+msgid "Active & Historical Pre-Auth Keys"
+msgstr "预授权密钥列表"
+
+msgid "Add"
+msgstr "添加"
+
+msgid "Add New Access Rule"
+msgstr "Add New Access Rule"
+
+msgid "Address and port to bind the Headscale HTTP server."
+msgstr "Headscale HTTP 服务绑定的 IP 与端口。"
+
+msgid "Address for Prometheus metrics endpoint (/metrics). Leave empty to disable."
+msgstr "Prometheus 监控指标端点（/metrics）监听地址，留空则禁用。"
+
+msgid "Address for internal CLI and gRPC communications."
+msgstr "内部 CLI 命令行与 gRPC 通信监听地址。"
+
+msgid "Admin / Router Only (autogroup:admin)"
+msgstr "仅限管理员 / 路由器（autogroup:admin）"
+
+msgid "Admin Devices (autogroup:admin)"
+msgstr "Admin Devices (autogroup:admin)"
+
+msgid "Advanced Feature"
+msgstr "Advanced Feature"
+
+msgid "Advanced Networking Scenarios"
+msgstr "进阶组网场景（子网路由与出口节点）"
+
+msgid "Advertise local home/office subnet so remote devices can access printers, NAS and servers without installing Tailscale on each device."
+msgstr "Advertise local home/office subnet so remote devices can access printers, NAS and servers without installing Tailscale on each device."
+
+msgid "All Connected Devices (Allow Any Device)"
+msgstr "所有已连接设备（全部放行 - 推荐）"
+
+msgid "All Connected Devices (Any Target)"
+msgstr "所有已连接设备（任意目标）"
+
+msgid "All Devices (*)"
+msgstr "All Devices (*)"
+
+msgid "All Ports & Services (Full Access - Recommended)"
+msgstr "所有端口与服务（全部放行 - 推荐）"
+
+msgid "All Ports (*)"
+msgstr "全部端口 (*)"
+
+msgid "All Target Devices (*)"
+msgstr "所有目标设备 (*)"
+
+msgid "All Targets & All Ports (*:*)"
+msgstr "所有目标设备 (全端口)"
+
+msgid "All available"
+msgstr "全部日志"
+
+msgid "Allow"
+msgstr "允许放行"
+
+msgid "Allow ["
+msgstr "允许【"
+
+msgid "Allow all connected devices to communicate on all ports."
+msgstr "允许所有已连接的设备之间无限制互通所有端口。"
+
+msgid "Allow enrolling multiple devices with this single key."
+msgstr "允许使用此单一密钥重复注册多台设备入网。"
+
+msgid "Android / HarmonyOS"
+msgstr "Android / 鸿蒙 (HarmonyOS)"
+
+msgid "Apply"
+msgstr "应用"
+
+msgid "Apply Routes"
+msgstr "Apply Routes"
+
+msgid "Applying..."
+msgstr "正在应用..."
+
+msgid "Approve Subnet Routes"
+msgstr "审批子网路由"
+
+msgid "Are you sure you want to clear the Headscale log entries?"
+msgstr "确定要清空 Headscale 的所有系统日志记录吗？"
+
+msgid "Are you sure you want to delete Rule #"
+msgstr "Are you sure you want to delete Rule #"
+
+msgid "Are you sure you want to delete node: %s? This action cannot be undone."
+msgstr "确定要删除节点 %s 吗？此操作不可逆，设备将从组网中彻底注销。"
+
+msgid "Are you sure you want to delete user: "
+msgstr "Are you sure you want to delete user: "
+
+msgid "Are you sure you want to delete user: %s? This will also delete all associated nodes."
+msgstr "确定要删除用户 %s 吗？这将同时注销并删除该用户下的所有关联节点设备。"
+
+msgid "Are you sure you want to expire and disconnect node: %s?"
+msgstr "确定要使节点 %s 到期并强制断开其连接吗？"
+
+msgid "Are you sure you want to expire node: "
+msgstr "Are you sure you want to expire node: "
+
+msgid "Are you sure you want to permanently delete node: "
+msgstr "Are you sure you want to permanently delete node: "
+
+msgid "Are you sure you want to revoke this pre-auth key?"
+msgstr "确定要作废此预授权密钥吗？作废后无法再使用该密钥接入新设备。"
+
+msgid "Auto Refresh (3s)"
+msgstr "自动刷新 (3秒)"
+
+msgid "Auto Scroll"
+msgstr "自动滚屏"
+
+msgid "Auto Update Public DERP Maps"
+msgstr "自动更新公共 DERP 映射"
+
+msgid "Auto-remove device registration from server once device goes offline."
+msgstr "设备离线断开后，自动从服务器注销并移除该设备。"
+
+msgid "Auto-use System Web Certificate (uhttpd / Nginx)"
+msgstr "自动使用系统 Web 证书 (uhttpd / Nginx)"
+
+msgid "Automated Script Login"
+msgstr "Automated Script Login"
+
+msgid "Automatically load system web server certificate when HTTPS is used."
+msgstr "启用 HTTPS 时，自动复用路由器系统 Web 服务现有的 SSL/TLS 证书。"
+
+msgid "Automatically open WAN firewall port (TCP %s) to allow external devices to connect."
+msgstr "自动放行 WAN 口防火墙端口（TCP %s），允许外网设备连接。"
+
+msgid "Automatically register node hostnames as reachable DNS domain names."
+msgstr "Automatically register node hostnames as reachable DNS domain names."
+
+msgid "BLOCKED"
+msgstr "已拦截"
+
+msgid "Base Domain"
+msgstr "MagicDNS 基础域名"
+
+msgid "Behind ISP Modem (Secondary Router)"
+msgstr "光猫拨号上网（路由器处于二级内网）"
+
+msgid "Belongs to User"
+msgstr "所属用户"
+
+msgid "Belongs to User:"
+msgstr "所属用户："
+
+msgid "CLOSED / BLOCKED"
+msgstr "未开放 / 已拦截"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Clear"
+msgstr "Clear"
+
+msgid "Clear Logs"
+msgstr "清空日志"
+
+msgid "Click "Create Pre-Auth Key", select your user, check "Reusable" so all your family devices can use the same key, and click Create. Copy the generated key."
+msgstr "点击“创建新预授权密钥”，选择所属用户，勾选“可复用”，以便所有设备使用同一密钥，然后点击生成并复制密钥。"
+
+msgid "Click to manage users"
+msgstr "点击进入用户管理"
+
+msgid "Client Platform Connection Guide"
+msgstr "全平台客户端连接教程"
+
+msgid "Client Setup Guide"
+msgstr "客户端配置指南"
+
+msgid "Close"
+msgstr "关闭"
+
+msgid "Close Firewall Port"
+msgstr "关闭防火墙端口"
+
+msgid "Close WAN firewall port for Headscale?"
+msgstr "Close WAN firewall port for Headscale?"
+
+msgid "Command / Server URL"
+msgstr "一键接入命令 / 服务器地址"
+
+msgid "Command copied to clipboard."
+msgstr "Command copied to clipboard."
+
+msgid "Common Network Scenarios & Port Forwarding"
+msgstr "常见组网场景与端口映射说明"
+
+msgid "Configuration Steps"
+msgstr "客户端配置接入步骤"
+
+msgid "Configure Headscale coordination server options, IP allocation, MagicDNS, and DERP relays."
+msgstr "配置 Headscale 协调服务器选项、虚拟 IP 网段分配、MagicDNS 以及 DERP 中继服务。"
+
+msgid "Configuring advanced networking capabilities such as subnet routing and default exit gateways."
+msgstr "配置打通本地局域网内网子网、或者将此节点作为全局出口网关。"
+
+msgid "Configuring firewall rules and reloading..."
+msgstr "正在配置防火墙规则并重新加载..."
+
+msgid "Copied!"
+msgstr "已复制!"
+
+msgid "Copy"
+msgstr "复制"
+
+msgid "Copy Command"
+msgstr "复制命令"
+
+msgid "Copy Key"
+msgstr "复制密钥"
+
+msgid "Copy URL"
+msgstr "复制 URL"
+
+msgid "Copy prefix"
+msgstr "复制前缀"
+
+msgid "Create New Pre-Auth Key"
+msgstr "创建新预授权密钥"
+
+msgid "Create New User"
+msgstr "创建新用户"
+
+msgid "Create Pre-Auth Key"
+msgstr "创建预授权密钥"
+
+msgid "Create User"
+msgstr "创建用户"
+
+msgid "Create and manage pre-authentication keys for unattended or automated client device enrollment."
+msgstr "创建和管理预授权密钥，用于客户端设备的免密无人值守或自动化注册入网。"
+
+msgid "Create your first user above to start managing devices and generating authentication keys."
+msgstr "请在上方输入用户名创建首个用户，以开始管理设备和生成认证密钥。"
+
+msgid "Created At"
+msgstr "创建时间"
+
+msgid "Custom DNS search domains pushed to clients."
+msgstr "Custom DNS search domains pushed to clients."
+
+msgid "Custom IP, Subnet or Tag..."
+msgstr "自定义 IP / 局域网段 / Tag..."
+
+msgid "Custom Port(s)..."
+msgstr "自定义端口..."
+
+msgid "Custom TLS Certificate File"
+msgstr "自定义 TLS 证书文件路径"
+
+msgid "Custom TLS Private Key File"
+msgstr "自定义 TLS 私钥文件路径"
+
+msgid "Custom User or Tag..."
+msgstr "自定义用户 / 标签..."
+
+msgid "DERP Relay"
+msgstr "DERP 中继"
+
+msgid "DISABLED"
+msgstr "已禁用"
+
+msgid "Debug"
+msgstr "Debug"
+
+msgid "Debug (Detailed)"
+msgstr "Debug (详细调试)"
+
+msgid "Delete"
+msgstr "删除"
+
+msgid "Delete Node"
+msgstr "删除节点"
+
+msgid "Delete User"
+msgstr "删除用户"
+
+msgid "Delete failed: %s"
+msgstr "删除失败：%s"
+
+msgid "Description & Purpose"
+msgstr "Description & Purpose"
+
+msgid "Destination & Ports"
+msgstr "Destination & Ports"
+
+msgid "Detected SSL Domain: "
+msgstr "检测到证书域名: "
+
+msgid "Detected available system certificate: %s (%s)"
+msgstr "已检测到系统可用 Web 证书：%s (%s)"
+
+msgid "Device Registration Command:"
+msgstr "设备入网接入命令："
+
+msgid "Disable Tailscale SSH"
+msgstr "Disable Tailscale SSH"
+
+msgid "ENABLED"
+msgstr "ENABLED"
+
+msgid "ERROR"
+msgstr "错误"
+
+msgid "Embedded DERP Relay"
+msgstr "内置 DERP 中继服务"
+
+msgid "Enable Embedded DERP Server"
+msgstr "Enable Embedded DERP Server"
+
+msgid "Enable Headscale Service"
+msgstr "启用 Headscale 服务"
+
+msgid "Enable MagicDNS"
+msgstr "启用 MagicDNS 解析"
+
+msgid "Enable Tailscale SSH"
+msgstr "Enable Tailscale SSH"
+
+msgid "Enable or disable the Headscale background daemon."
+msgstr "启用或禁用 Headscale 后台守护进程。"
+
+msgid "Enable the built-in DERP relay server on this router to bypass Symmetric NAT."
+msgstr "Enable the built-in DERP relay server on this router to bypass Symmetric NAT."
+
+msgid "Enabling and starting Headscale service..."
+msgstr "Enabling and starting Headscale service..."
+
+msgid "Enter a new display name for node ID: "
+msgstr "Enter a new display name for node ID: "
+
+msgid "Enter a new display name for node: %s"
+msgstr "请输入节点 %s 的新备注名称："
+
+msgid "Enter subnet routes to approve for this node (comma-separated):"
+msgstr "请输入要为该节点批准的子网路由（多个网段用逗号分隔，如 192.168.1.0/24,10.0.0.0/8）："
+
+msgid "Ephemeral"
+msgstr "临时节点"
+
+msgid "Ephemeral Key (Auto-remove node on disconnect)"
+msgstr "临时密钥（设备断开后自动从节点列表中销毁注销）"
+
+msgid "Ephemeral Node"
+msgstr "临时设备节点"
+
+msgid "Ephemeral Node Inactivity Timeout"
+msgstr "临时节点不活跃超时时间"
+
+msgid "Error"
+msgstr "错误"
+
+msgid "Error (Errors only)"
+msgstr "Error (仅错误)"
+
+msgid "Error: "
+msgstr "错误: "
+
+msgid "Error: %s"
+msgstr "发生错误：%s"
+
+msgid "Example Command"
+msgstr "Example Command"
+
+msgid "Examples: 1h, 24h, 720h (30 days), 8760h (1 year)."
+msgstr "时间格式示例：1h (1小时)、24h (24小时)、720h (30天)、8760h (1年)。"
+
+msgid "Existing Users"
+msgstr "现有用户列表"
+
+msgid "Exit Node (Default Gateway)"
+msgstr "Exit Node (Default Gateway)"
+
+msgid "Expiration"
+msgstr "有效期限"
+
+msgid "Expire"
+msgstr "到期"
+
+msgid "Expire Node"
+msgstr "使节点到期"
+
+msgid "Expire failed: %s"
+msgstr "操作失败：%s"
+
+msgid "Expire this node immediately"
+msgstr "立即让该节点失效/强制下线"
+
+msgid "Expire this pre-auth key?"
+msgstr "Expire this pre-auth key?"
+
+msgid "Expired"
+msgstr "已失效"
+
+msgid "Export File"
+msgstr "导出日志文件"
+
+msgid "External DERP Map URLs"
+msgstr "外部 DERP Map URL 列表"
+
+msgid "External Tailscale clients can connect directly via WAN IP."
+msgstr "外部 Tailscale 客户端可通过 WAN 口公网 IP/域名直连接入。"
+
+msgid "External access blocked"
+msgstr "外网访问已拦截"
+
+msgid "Failed to copy log."
+msgstr "复制日志失败。"
+
+msgid "Failed to create user: "
+msgstr "Failed to create user: "
+
+msgid "Failed to create user: %s"
+msgstr "创建用户失败：%s"
+
+msgid "Failed to generate key: %s"
+msgstr "生成密钥失败：%s"
+
+msgid "Failed to save policy: "
+msgstr "Failed to save policy: "
+
+msgid "Failed to update routes: %s"
+msgstr "更新路由失败：%s"
+
+msgid "Filter log entries..."
+msgstr "筛选过滤日志条目..."
+
+msgid "Filter: "
+msgstr "筛选过滤: "
+
+msgid "Follow these 4 simple steps in sequence to complete your private VPN mesh network in 3 minutes."
+msgstr "按顺序遵循以下 4 个简单步骤，3 分钟即可搭建完成您的专属私有 VPN Mesh 组网。"
+
+msgid "For devices connecting within home/office local LAN."
+msgstr "供家庭或办公室局域网内设备快速接入。"
+
+msgid "For remote mobile devices via DDNS or Public IP (configure in Settings tab)."
+msgstr "供异地办公或移动设备通过 DDNS 动态域名/公网接入（可在「配置」中设置）。"
+
+msgid "General"
+msgstr "基础设置"
+
+msgid "General Settings"
+msgstr "常规设置"
+
+msgid "Generate Key"
+msgstr "生成密钥"
+
+msgid "Generate New Pre-Auth Key"
+msgstr "生成新预授权密钥"
+
+msgid "Global Nameservers (DNS)"
+msgstr "Global Nameservers (DNS)"
+
+msgid "Go to Nodes Management"
+msgstr "前往节点管理"
+
+msgid "Go to Pre-Auth Keys"
+msgstr "前往预授权密钥"
+
+msgid "Go to Settings Tab"
+msgstr "前往常规设置"
+
+msgid "Go to User Management"
+msgstr "前往用户管理"
+
+msgid "Headscale"
+msgstr "Headscale"
+
+msgid "Headscale - Access Control Policy (ACL)"
+msgstr "Headscale - ACL 访问控制策略"
+
+msgid "Headscale - Control Server"
+msgstr "Headscale - 控制端服务器"
+
+msgid "Headscale - Pre-Auth Keys"
+msgstr "Headscale - 预授权密钥"
+
+msgid "Headscale - Pre-Authentication Keys"
+msgstr "Headscale - 预授权密钥 (Pre-Auth Keys)"
+
+msgid "Headscale - Registered Nodes"
+msgstr "Headscale - 节点管理"
+
+msgid "Headscale - Settings"
+msgstr "Headscale - 参数配置"
+
+msgid "Headscale - Setup & Configuration Guide"
+msgstr "Headscale - 快速使用指南"
+
+msgid "Headscale - System Logs"
+msgstr "Headscale - 实时运行日志"
+
+msgid "Headscale - Users"
+msgstr "Headscale - 用户管理"
+
+msgid "Headscale - Users / Namespaces"
+msgstr "Headscale - 用户 / 命名空间管理"
+
+msgid "Headscale is an open-source, self-hosted implementation of the Tailscale coordination server."
+msgstr "Headscale 是 Tailscale 控制协调服务器的开源自建实现。"
+
+msgid "Headscale requires devices to belong to a user. Enter a simple username (e.g. "admin" or "family") and click "Create User"."
+msgstr "Headscale 要求设备必须归属于某个用户。请输入用户名（如“admin”或“family”）并点击“创建用户”。"
+
+msgid "Hold Option (⌥) and click top menu bar Tailscale icon -> "Custom Login Server" -> enter URL."
+msgstr "按住 Option 键并点击顶部菜单栏 Tailscale 图标 -> 点击“Custom Login Server” -> 粘贴服务器地址。"
+
+msgid "Hold Shift and right-click Tailscale tray icon -> "Custom Login Server" -> enter URL; or run in CMD/PowerShell."
+msgstr "按住 Shift 键并右键托盘 Tailscale 图标 -> 点击“Custom Login Server” -> 粘贴服务器地址；或在命令行中执行。"
+
+msgid "Home / Local LAN Only"
+msgstr "仅在家庭局域网内互联"
+
+msgid "Home Local LAN (192.168.1.0/24)"
+msgstr "家庭本地局域网 (192.168.1.0/24)"
+
+msgid "Hostname"
+msgstr "主机名"
+
+msgid "How to configure Server URL and port forwarding based on your home network topology."
+msgstr "根据您家中的网络拓扑结构，选择适合的控制端地址配置与端口转发方案。"
+
+msgid "Human-friendly region description."
+msgstr "Human-friendly region description."
+
+msgid "ID"
+msgstr "ID"
+
+msgid "INFO"
+msgstr "信息"
+
+msgid "IP Addresses"
+msgstr "IP 地址"
+
+msgid "IP Allocation"
+msgstr "IP 地址分配"
+
+msgid "IP Allocation Strategy"
+msgstr "IP Allocation Strategy"
+
+msgid "IPv4 Overlay Prefix"
+msgstr "IPv4 Overlay Prefix"
+
+msgid "IPv6 Overlay Prefix"
+msgstr "IPv6 Overlay Prefix"
+
+msgid "Info (Standard)"
+msgstr "Info (标准信息)"
+
+msgid "Install official Tailscale App on your phone/PC, enter your Server URL and Auth Key to connect. Once connected, your device will appear in the "Nodes" tab!"
+msgstr "在手机或电脑上安装 Tailscale 官方客户端，输入控制服务器地址与预授权密钥即可快速入网。连接成功后即可在“节点管理”中查看到设备！"
+
+msgid "Install official Tailscale package, then execute login command in root terminal."
+msgstr "Install official Tailscale package, then execute login command in root terminal."
+
+msgid "Instructions for logging into Headscale across all desktop, mobile and NAS operating systems."
+msgstr "涵盖桌面电脑、手机移动端、路由器及 NAS 存储系统的详细接入步骤。"
+
+msgid "Interval for fetching public DERP updates."
+msgstr "Interval for fetching public DERP updates."
+
+msgid "JSON"
+msgstr "JSON"
+
+msgid "JSON (Structured)"
+msgstr "JSON 格式 (结构化)"
+
+msgid "Key & Join Command"
+msgstr "密钥与入网接入命令"
+
+msgid "Key / Prefix"
+msgstr "密钥 / 前缀"
+
+msgid "Key Generation Failed"
+msgstr "生成密钥失败"
+
+msgid "LAN Server URL"
+msgstr "内网服务地址 (LAN)"
+
+msgid "LAN Server URL copied to clipboard."
+msgstr "局域网服务器地址已复制到剪贴板。"
+
+msgid "LAN Server URL:"
+msgstr "局域网访问地址 (LAN URL)："
+
+msgid "List of URLs to fetch external DERP maps from."
+msgstr "List of URLs to fetch external DERP maps from."
+
+msgid "Listen Address"
+msgstr "监听绑定地址"
+
+msgid "Live output and connection logs from the Headscale daemon."
+msgstr "实时查看 Headscale 守护进程的运行与连接日志。"
+
+msgid "Live output, connection logs, and debugging traces from the Headscale daemon."
+msgstr "Headscale 服务守护进程的实时输出、网络连接与调试日志。"
+
+msgid "Local File Sharing (Samba / SMB: 445)"
+msgstr "局域网文件共享（Samba / SMB: 445）"
+
+msgid "Local LAN Subnet (192.168.1.0/24)"
+msgstr "Local LAN Subnet (192.168.1.0/24)"
+
+msgid "Local LAN Subnet Devices (192.168.1.0/24)"
+msgstr "本地局域网所有内网设备（192.168.1.0/24）"
+
+msgid "Log"
+msgstr "运行日志"
+
+msgid "Log Format"
+msgstr "日志输出格式"
+
+msgid "Log Level"
+msgstr "日志级别"
+
+msgid "Log cleared successfully."
+msgstr "日志已成功清空。"
+
+msgid "Log copied to clipboard."
+msgstr "日志内容已成功复制到剪贴板。"
+
+msgid "Log file downloaded: "
+msgstr "日志文件已下载: "
+
+msgid "Log in to your optical ISP modem admin page -> find "Port Forwarding / Virtual Server" -> forward external TCP 8080 to this OpenWrt router WAN IP."
+msgstr "登录光猫管理后台 -> 找到“端口转发 / 虚拟服务器” -> 将外网 TCP 8080 端口映射转发至本路由器的 WAN 口 IP。"
+
+msgid "Logging"
+msgstr "日志设置"
+
+msgid "MagicDNS"
+msgstr "MagicDNS 域名"
+
+msgid "MagicDNS Base Domain"
+msgstr "MagicDNS 基础域名"
+
+msgid "Make sure "Enable Headscale Service" is checked. If you need remote access outside your home, enter your DDNS domain in "Server URL" (e.g. http://myrouter.ddns.net:8080) and check "Open Firewall Port". Default port is 8080."
+msgstr "确保已勾选“启用 Headscale 服务”。如需外网异地组网，请在“控制端外部访问地址”填入 DDNS 域名（如 http://myrouter.ddns.net:8080）并勾选“开放防火墙端口”。默认服务端口为 8080。"
+
+msgid "Manage Headscale users (namespaces) for segmenting registered nodes and generating authentication keys."
+msgstr "管理 Headscale 用户（命名空间），用于隔离划分注册节点并生成专属入网凭证。"
+
+msgid "Manage all connected Tailscale client devices and machines registered to this Headscale coordination server."
+msgstr "管理已连接并注册到本 Headscale 控制服务器的所有 Tailscale 客户端设备与节点。"
+
+msgid "Manage inter-device communication permissions and network access rules."
+msgstr "管理设备间互联互通权限与网络安全访问策略。"
+
+msgid "Metrics Listen Address"
+msgstr "Prometheus 监控指标监听地址"
+
+msgid "Modified"
+msgstr "已修改"
+
+msgid "My Own Devices Only"
+msgstr "仅限我自己的设备"
+
+msgid "My Own Devices Only (Prevent Cross-User Access)"
+msgstr "仅限我自己的设备（禁止其他用户访问）"
+
+msgid "N/A"
+msgstr "N/A"
+
+msgid "Network Setup & Port Forwarding Required"
+msgstr "网络拓扑与端口映射要求"
+
+msgid "Never"
+msgstr "永不过期"
+
+msgid "New Key Generated:"
+msgstr "新生成密钥："
+
+msgid "No"
+msgstr "否"
+
+msgid "No ACL rules defined. Default is Deny All."
+msgstr "当前未配置任何 ACL 访问规则。默认行为是禁止所有互访。"
+
+msgid "No Pre-Auth Keys Found"
+msgstr "暂无预授权密钥"
+
+msgid "No Registered Nodes"
+msgstr "暂无已注册节点"
+
+msgid "No Users Found"
+msgstr "暂无用户命名空间"
+
+msgid "No custom ACL rules defined (All traffic blocked by default unless rules are added)."
+msgstr "暂无自定义 ACL 规则（默认拦截所有跨用户流量，除非添加放行规则）。"
+
+msgid "No extra network configuration required. All phones and computers connected to this router Wi-Fi/LAN can register and interconnect directly."
+msgstr "无需任何额外网络配置。所有连接至本路由器 Wi-Fi 或 LAN 口的设备均可直接注册并互相直连访问。"
+
+msgid "No log entries found."
+msgstr "未检索到任何日志条目。"
+
+msgid "No matching log entries found."
+msgstr "未检索到匹配的日志条目。"
+
+msgid "No pre-auth keys found."
+msgstr "当前暂无预授权密钥。"
+
+msgid "No registered nodes found in this Headscale server."
+msgstr "当前暂无已注册的客户端节点设备。"
+
+msgid "No system certificate detected in standard paths (/etc/uhttpd.crt)."
+msgstr "标准路径下未检测到可用的系统证书 (/etc/uhttpd.crt)。"
+
+msgid "No users exist. Please create a user first."
+msgstr "No users exist. Please create a user first."
+
+msgid "No users found. Create a user above to get started."
+msgstr "当前暂无用户。请在上方表单中创建首个用户。"
+
+msgid "Node deleted successfully."
+msgstr "节点设备删除成功。"
+
+msgid "Node expired successfully."
+msgstr "节点已成功设置为到期状态。"
+
+msgid "Node is already expired or offline"
+msgstr "节点已处于离线或失效状态"
+
+msgid "Node renamed successfully."
+msgstr "节点备注名称修改成功。"
+
+msgid "Nodes"
+msgstr "节点管理"
+
+msgid "Not saved"
+msgstr "未保存"
+
+msgid "Note: Pre-auth keys are sensitive credentials. Full plaintext keys are displayed in the list upon creation. Please copy and save them immediately."
+msgstr "安全提示：预授权密钥属于高敏感凭据，完整明文仅在刚生成时于列表中展示。请在生成后立即复制并妥善保存。"
+
+msgid "Novice 4-Step Zero-Barrier Setup Guide"
+msgstr "新手 4 步零门槛配置指引"
+
+msgid "OFFLINE"
+msgstr "离线"
+
+msgid "OK"
+msgstr "确定"
+
+msgid "ONLINE"
+msgstr "在线"
+
+msgid "OPENED"
+msgstr "已开放"
+
+msgid "OS"
+msgstr "系统平台"
+
+msgid "Offline"
+msgstr "离线"
+
+msgid "One-click Command:"
+msgstr "一键接入命令："
+
+msgid "One-liner Command for Device Registration:"
+msgstr "客户端一键接入注册命令："
+
+msgid "Online"
+msgstr "正常在线"
+
+msgid "Online: "
+msgstr "在线数："
+
+msgid "Only allow nodes registered to this Headscale server to use the relay."
+msgstr "仅允许注册到本 Headscale 服务器的客户端使用该中继。"
+
+msgid "Only devices on local LAN can connect currently."
+msgstr "当前仅允许路由器本地局域网内设备连接。"
+
+msgid "Open Firewall Port"
+msgstr "开放防火墙端口"
+
+msgid "Open Tailscale App -> tap top-right 3-dots menu 3 times to unlock Developer Mode -> tap Change Server."
+msgstr "Open Tailscale App -> tap top-right 3-dots menu 3 times to unlock Developer Mode -> tap Change Server."
+
+msgid "Open WAN firewall port (%s/tcp) to allow external connections?"
+msgstr "Open WAN firewall port (%s/tcp) to allow external connections?"
+
+msgid "Open iOS system Settings -> scroll down to Tailscale -> enable "Custom Server" -> paste server URL."
+msgstr "打开 iOS 系统“设置” -> 下滑找到 Tailscale -> 开启“Custom Server”开关 -> 粘贴控制服务器地址。"
+
+msgid "Options"
+msgstr "Options"
+
+msgid "Output format for daemon logs."
+msgstr "服务进程日志的输出格式。"
+
+msgid "Output format for log entries."
+msgstr "Output format for log entries."
+
+msgid "Overview"
+msgstr "状态概览"
+
+msgid "Pass an auth key directly for headless server or Docker container auto-enrollment."
+msgstr "Pass an auth key directly for headless server or Docker container auto-enrollment."
+
+msgid "Pending"
+msgstr "待保存"
+
+msgid "Periodically refresh official Tailscale public DERP server maps."
+msgstr "定期自动拉取官方 Tailscale 全球公共 DERP 中继服务器节点列表。"
+
+msgid "Permission"
+msgstr "权限"
+
+msgid "Plain Text"
+msgstr "Plain Text"
+
+msgid "Platform / OS"
+msgstr "操作系统平台"
+
+msgid "Please enter a username."
+msgstr "请输入有效的用户名。"
+
+msgid "Please specify allowed port."
+msgstr "请选择或输入放行端口。"
+
+msgid "Please specify source device."
+msgstr "请选择或输入源设备。"
+
+msgid "Please specify target device."
+msgstr "请选择或输入目标范围。"
+
+msgid "Port: "
+msgstr "放行端口："
+
+msgid "Pre-Auth Key Generated"
+msgstr "预授权密钥已生成"
+
+msgid "Pre-Auth Keys"
+msgstr "预授权密钥"
+
+msgid "Pre-Auth Keys allow new Tailscale client machines to join your tailnet automatically without manual web authorization."
+msgstr "预授权密钥可让新的 Tailscale 客户端设备自动加入网络，无需管理员手动在 Web 上确认授权。"
+
+msgid "Pre-auth key revoked successfully."
+msgstr "预授权密钥已成功作废。"
+
+msgid "Pre-auth keys allow unattended device enrollment. Full plaintext keys and copy buttons will remain accessible in this table."
+msgstr "预授权密钥用于设备无人值守自动入网。本系统生成的完整明文密钥与一键复制命令将在此表格中持久保留。"
+
+msgid "Program Version"
+msgstr "协调端程序版本"
+
+msgid "Quick Options & Presets"
+msgstr "Quick Options & Presets"
+
+msgid "REGISTERED NODES"
+msgstr "已注册设备节点"
+
+msgid "RUNNING"
+msgstr "正在运行"
+
+msgid "Random (Recommended for security)"
+msgstr "Random (Recommended for security)"
+
+msgid "Refresh"
+msgstr "刷新日志"
+
+msgid "Region ID"
+msgstr "DERP 区域 ID"
+
+msgid "Region Name"
+msgstr "DERP 区域名称"
+
+msgid "Registered Nodes"
+msgstr "节点管理"
+
+msgid "Remote Desktop (RDP/VNC: 3389, 5900)"
+msgstr "远程桌面连接 (RDP/VNC: 3389, 5900)"
+
+msgid "Remote Desktop (Windows RDP / VNC: 3389, 5900)"
+msgstr "远程桌面（Windows RDP / VNC: 3389, 5900）"
+
+msgid "Remote SSH (22)"
+msgstr "远程 SSH 终端 (22)"
+
+msgid "Rename"
+msgstr "重命名"
+
+msgid "Rename Node"
+msgstr "重命名节点"
+
+msgid "Rename failed: %s"
+msgstr "重命名失败：%s"
+
+msgid "Reset"
+msgstr "复位"
+
+msgid "Reset ACL policy to Default (Allow All Traffic)?"
+msgstr "Reset ACL policy to Default (Allow All Traffic)?"
+
+msgid "Reset to Default (Allow All)"
+msgstr "Reset to Default (Allow All)"
+
+msgid "Restart Service"
+msgstr "重启服务"
+
+msgid "Restarting Headscale service..."
+msgstr "Restarting Headscale service..."
+
+msgid "Restarting Service"
+msgstr "正在重启服务"
+
+msgid "Reusable"
+msgstr "可复用"
+
+msgid "Reusable Key"
+msgstr "可复用密钥"
+
+msgid "Reusable Key (Can authenticate multiple devices)"
+msgstr "可复用密钥（允许多台设备重复使用此 Key 加入网络）"
+
+msgid "Revoke"
+msgstr "作废"
+
+msgid "Revoke Pre-Auth Key"
+msgstr "作废预授权密钥"
+
+msgid "Revoke/Expire this pre-auth key?"
+msgstr "确定要作废此预授权密钥吗？作废后无法再次用于配网。"
+
+msgid "Revoked"
+msgstr "已作废"
+
+msgid "Root domain suffix for MagicDNS (e.g. example.com or home.internal)."
+msgstr "Root domain suffix for MagicDNS (e.g. example.com or home.internal)."
+
+msgid "Route all remote client internet traffic through this router (Full tunneling for public Wi-Fi security)."
+msgstr "Route all remote client internet traffic through this router (Full tunneling for public Wi-Fi security)."
+
+msgid "Router Dial-up (PPPoE / Public IP)"
+msgstr "路由器拨号上网（拥有公网 IP）"
+
+msgid "Routes"
+msgstr "路由"
+
+msgid "Routes updated successfully."
+msgstr "子网路由网段更新成功。"
+
+msgid "Routes:"
+msgstr "路由："
+
+msgid "Rows: "
+msgstr "行数: "
+
+msgid "Rule #"
+msgstr "Rule #"
+
+msgid "Rule Summary: "
+msgstr "规则效果预览："
+
+msgid "SERVICE STATUS"
+msgstr "服务运行状态"
+
+msgid "SSH Terminal (Port 22)"
+msgstr "SSH 远程终端（端口 22）"
+
+msgid "SSH into NAS as root, execute Tailscale login command with login-server parameter."
+msgstr "SSH into NAS as root, execute Tailscale login command with login-server parameter."
+
+msgid "STOPPED"
+msgstr "STOPPED"
+
+msgid "STUN Listen Address"
+msgstr "STUN 监听地址"
+
+msgid "Same User Devices (All Ports)"
+msgstr "同用户设备 (全端口)"
+
+msgid "Same User Devices (autogroup:self)"
+msgstr "Same User Devices (autogroup:self)"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Save & Apply"
+msgstr "保存并应用"
+
+msgid "Saving..."
+msgstr "正在保存..."
+
+msgid "Scroll to head"
+msgstr "滚动至顶部"
+
+msgid "Scroll to tail"
+msgstr "滚动至底部"
+
+msgid "Search Domains"
+msgstr "DNS 搜索域"
+
+msgid "Search log keywords..."
+msgstr "搜索日志关键词..."
+
+msgid "Select a user above and click "Generate Key" to create your first authentication token."
+msgstr "请在上方选择用户并点击“生成预授权密钥”，以创建首个设备免密入网凭证。"
+
+msgid "Sequential (Linear)"
+msgstr "Sequential (Linear)"
+
+msgid "Server URL"
+msgstr "控制端外部访问地址 (Server URL)"
+
+msgid "Server URL Setting"
+msgstr "控制端地址 (Server URL) 填写方式"
+
+msgid "Server URL copied to clipboard."
+msgstr "服务器 URL 已复制到剪贴板。"
+
+msgid "Service Details & Quick Operations"
+msgstr "服务详细参数与快捷操作"
+
+msgid "Service Inactive"
+msgstr "服务未激活"
+
+msgid "Service Status"
+msgstr "服务运行状态"
+
+msgid "Settings"
+msgstr "服务配置"
+
+msgid "Setup Guide"
+msgstr "快速使用指南"
+
+msgid "Simply check "Open Firewall Port" in the Settings tab. Remote mobile devices can connect anytime using your DDNS domain name."
+msgstr "只需在“常规设置”中勾选“开放防火墙端口”。异地移动设备即可通过 DDNS 域名随时随地安全入网。"
+
+msgid "Source (Initiator)"
+msgstr "Source (Initiator)"
+
+msgid "Source Devices (Who)"
+msgstr "发起源设备"
+
+msgid "Specify comma-separated CIDR routes to approve for node: "
+msgstr "Specify comma-separated CIDR routes to approve for node: "
+
+msgid "Start Service"
+msgstr "Start Service"
+
+msgid "Starting Service"
+msgstr "Starting Service"
+
+msgid "Status"
+msgstr "状态"
+
+msgid "Step 1: Check Server Settings & Firewall"
+msgstr "第 1 步：检查服务端基础设置与防火墙"
+
+msgid "Step 2: Create a User (Namespace)"
+msgstr "第 2 步：创建用户命名空间 (User)"
+
+msgid "Step 3: Generate a Pre-Auth Key (Passwordless Login)"
+msgstr "第 3 步：生成预授权密钥 (免密入网凭证)"
+
+msgid "Step 4: Connect Client Devices & Enjoy"
+msgstr "第 4 步：连接客户端设备并畅享互联"
+
+msgid "Stop Service"
+msgstr "停止服务"
+
+msgid "Stopping Headscale service and disabling in config..."
+msgstr "Stopping Headscale service and disabling in config..."
+
+msgid "Stopping Service"
+msgstr "Stopping Service"
+
+msgid "Strategy for assigning new IP addresses to registering nodes."
+msgstr "Strategy for assigning new IP addresses to registering nodes."
+
+msgid "Subnet Router (LAN Access)"
+msgstr "Subnet Router (LAN Access)"
+
+msgid "Subnet Routes:"
+msgstr "子网路由："
+
+msgid "Synology / QNAP NAS"
+msgstr "群晖 (Synology) / 威联通 (QNAP) NAS"
+
+msgid "System Overview & Metrics"
+msgstr "系统总览与核心指标"
+
+msgid "TLS / Security"
+msgstr "TLS 证书与安全"
+
+msgid "Tagged/Shared"
+msgstr "Tagged/Shared"
+
+msgid "Target & Ports (What)"
+msgstr "目标设备与放行端口"
+
+msgid "Target User / Namespace"
+msgstr "目标归属用户"
+
+msgid "Text (Human Readable)"
+msgstr "文本格式 (易读)"
+
+msgid "The URL clients will connect to. Example: http://192.168.1.1:8080 or https://headscale.example.com"
+msgstr "客户端连接的外部访问 URL。例如：http://192.168.1.1:8080 或 https://headscale.example.com"
+
+msgid "The following Pre-Auth Keys have been generated:"
+msgstr "以下预授权密钥已成功生成："
+
+msgid "Timeout after which inactive ephemeral nodes are automatically deleted (e.g. 30m, 1h)."
+msgstr "Timeout after which inactive ephemeral nodes are automatically deleted (e.g. 30m, 1h)."
+
+msgid "To Create"
+msgstr "待创建"
+
+msgid "To Delete"
+msgstr "待删除"
+
+msgid "To Expire"
+msgstr "待到期"
+
+msgid "To Revoke"
+msgstr "待作废"
+
+msgid "Trace (Detailed)"
+msgstr "Trace (Detailed)"
+
+msgid "UDP port used for STUN NAT traversal."
+msgstr "用于 STUN NAT 穿透检测的 UDP 监听端口。"
+
+msgid "USERS (NAMESPACES)"
+msgstr "已创建用户 (命名空间)"
+
+msgid "Undo"
+msgstr "撤销"
+
+msgid "Unique numeric identifier for embedded DERP region."
+msgstr "Unique numeric identifier for embedded DERP region."
+
+msgid "Unknown"
+msgstr "Unknown"
+
+msgid "Update Frequency"
+msgstr "更新频率"
+
+msgid "Updating Firewall"
+msgstr "正在更新防火墙规则"
+
+msgid "Upstream DNS servers pushed to connected clients (e.g. 223.5.5.5, 119.29.29.29, 1.1.1.1)."
+msgstr "Upstream DNS servers pushed to connected clients (e.g. 223.5.5.5, 119.29.29.29, 1.1.1.1)."
+
+msgid "Usage Scenario"
+msgstr "组网使用场景"
+
+msgid "Used"
+msgstr "已使用"
+
+msgid "User"
+msgstr "用户"
+
+msgid "User created successfully."
+msgstr "用户创建成功。"
+
+msgid "User deleted successfully."
+msgstr "用户删除成功。"
+
+msgid "User:"
+msgstr "所属用户："
+
+msgid "Username"
+msgstr "用户名"
+
+msgid "Username (e.g. alice, work, home)"
+msgstr "用户名（例如 alice, bob, home）"
+
+msgid "Users"
+msgstr "用户管理"
+
+msgid "Users (Namespaces)"
+msgstr "用户管理 (命名空间)"
+
+msgid "Valid"
+msgstr "有效"
+
+msgid "Verbosity level of Headscale daemon logging (set to Debug for troubleshooting)."
+msgstr "Headscale 服务守护进程的日志详细级别（故障排查时可切换为 Debug 调试模式）。"
+
+msgid "Verbosity level of the system logs."
+msgstr "Verbosity level of the system logs."
+
+msgid "Verify Clients"
+msgstr "验证客户端接入"
+
+msgid "Virtual IPv4 subnet pool allocated to Tailscale nodes. Default 100.64.0.0/10."
+msgstr "Virtual IPv4 subnet pool allocated to Tailscale nodes. Default 100.64.0.0/10."
+
+msgid "Virtual IPv6 subnet pool allocated to Tailscale nodes. Default fd7a:115c:a1e0::/48."
+msgstr "Virtual IPv6 subnet pool allocated to Tailscale nodes. Default fd7a:115c:a1e0::/48."
+
+msgid "WAN / Public Server URL"
+msgstr "外网服务地址 (WAN / 公网)"
+
+msgid "WAN / Public URL:"
+msgstr "公网访问地址 (WAN / DDNS URL)："
+
+msgid "WAN FIREWALL"
+msgstr "WAN 口防火墙"
+
+msgid "WAN Firewall"
+msgstr "WAN 防火墙"
+
+msgid "WAN Firewall Port"
+msgstr "WAN 口防火墙端口"
+
+msgid "WAN Server URL copied to clipboard."
+msgstr "公网服务器地址已复制到剪贴板。"
+
+msgid "WARN"
+msgstr "警告"
+
+msgid "Warn"
+msgstr "Warn"
+
+msgid "Warn (Warnings only)"
+msgstr "Warn (仅警告)"
+
+msgid "Web Browsing (HTTP / HTTPS: 80, 443)"
+msgstr "网页浏览与网站（HTTP / HTTPS: 80, 443）"
+
+msgid "Web Services (HTTP/HTTPS: 80, 443)"
+msgstr "Web 网站服务 (HTTP/HTTPS: 80, 443)"
+
+msgid "When client devices (phones, computers, NAS) enroll with a Pre-Auth Key, they will automatically appear here."
+msgstr "当客户端设备（手机、电脑、NAS）使用预授权密钥完成配网后，将自动在此显示。"
+
+msgid "Windows File Sharing (SMB: 445)"
+msgstr "Windows 局域网文件共享 (SMB: 445)"
+
+msgid "Yes"
+msgstr "是"
+
+msgid "Your new Pre-Auth Key is ready:"
+msgstr "新预授权密钥已生成："
+
+msgid "Zero-barrier novice onboarding tutorial and complete step-by-step connection guide for Headscale."
+msgstr "Headscale 零门槛新手保姆级入网教程与各平台客户端一键配置指南。"
+
+msgid "] on ["
+msgstr "】的【"
+
+msgid "] to access ["
+msgstr "】访问【"
+
+msgid "gRPC Listen Address"
+msgstr "gRPC 内部监听地址"
+
+msgid "iOS (iPhone / iPad)"
+msgstr "iOS (iPhone / iPad)"
+
+msgid "nodes"
+msgstr "台设备"

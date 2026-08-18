@@ -1,0 +1,75 @@
+{
+	"admin/vpn/headscale": {
+		"title": "Headscale",
+		"action": {
+			"type": "firstchild"
+		},
+		"depends": {
+			"acl": [ "luci-app-headscale" ]
+		}
+	},
+	"admin/vpn/headscale/overview": {
+		"title": "Overview",
+		"order": 1,
+		"action": {
+			"type": "view",
+			"path": "headscale/overview"
+		}
+	},
+	"admin/vpn/headscale/settings": {
+		"title": "Settings",
+		"order": 2,
+		"action": {
+			"type": "view",
+			"path": "headscale/settings"
+		}
+	},
+	"admin/vpn/headscale/nodes": {
+		"title": "Nodes",
+		"order": 3,
+		"action": {
+			"type": "view",
+			"path": "headscale/nodes"
+		}
+	},
+	"admin/vpn/headscale/users": {
+		"title": "Users",
+		"order": 4,
+		"action": {
+			"type": "view",
+			"path": "headscale/users"
+		}
+	},
+	"admin/vpn/headscale/preauthkeys": {
+		"title": "Pre-Auth Keys",
+		"order": 5,
+		"action": {
+			"type": "view",
+			"path": "headscale/preauthkeys"
+		}
+	},
+	"admin/vpn/headscale/acls": {
+		"title": "ACL Policy",
+		"order": 6,
+		"action": {
+			"type": "view",
+			"path": "headscale/acls"
+		}
+	},
+	"admin/vpn/headscale/log": {
+		"title": "Log",
+		"order": 7,
+		"action": {
+			"type": "view",
+			"path": "headscale/log"
+		}
+	},
+	"admin/vpn/headscale/guide": {
+		"title": "Setup Guide",
+		"order": 8,
+		"action": {
+			"type": "view",
+			"path": "headscale/guide"
+		}
+	}
+}

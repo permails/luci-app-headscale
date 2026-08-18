@@ -1,0 +1,28 @@
+{
+	"luci-app-headscale": {
+		"description": "Grant UCI, ubus and file permissions for LuCI Headscale application",
+		"read": {
+			"uci": [ "headscale", "firewall" ],
+			"ubus": {
+				"luci.headscale": [ "*" ],
+				"service": [ "list" ],
+				"file": [ "read", "list", "stat" ]
+			},
+			"file": {
+				"/var/etc/headscale/config.yaml": [ "read" ],
+				"/etc/headscale/acl.hujson": [ "read" ],
+				"/var/log/headscale/*": [ "read" ]
+			}
+		},
+		"write": {
+			"uci": [ "headscale", "firewall" ],
+			"ubus": {
+				"luci.headscale": [ "*" ]
+			},
+			"file": {
+				"/etc/headscale/acl.hujson": [ "write" ],
+				"/etc/init.d/firewall reload": [ "exec" ]
+			}
+		}
+	}
+}

@@ -1,0 +1,7 @@
+.DS_Store
+._*
+*.tmp
+*.lmo
+*.pyc
+__pycache__/
+compile_lmo.py

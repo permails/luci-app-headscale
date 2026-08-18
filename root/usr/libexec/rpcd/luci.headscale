@@ -1,0 +1,655 @@
+#!/bin/sh
+# RPCD backend plugin for luci-app-headscale
+# Copyright (C) 2026 permails <logo@permails.com>
+#
+# This is free software, licensed under the Apache License, Version 2.0.
+#
+
+. /usr/share/libubox/jshn.sh
+
+HEADSCALE_BIN="/usr/bin/headscale"
+CONFIG_PATH="/var/etc/headscale/config.yaml"
+ACL_PATH="/etc/headscale/acl.hujson"
+LOG_DIR="/var/log/headscale"
+
+run_headscale() {
+	pid=$(pidof headscale)
+	[ -z "$pid" ] && return 1
+	if [ -f "$CONFIG_PATH" ]; then
+		timeout -s 9 2 "$HEADSCALE_BIN" -c "$CONFIG_PATH" "$@"
+	else
+		timeout -s 9 2 "$HEADSCALE_BIN" "$@"
+	fi
+}
+
+case "$1" in
+	list)
+		echo '{
+			"get_status": {},
+			"list_nodes": {},
+			"delete_node": { "id": 0 },
+			"expire_node": { "id": 0 },
+			"rename_node": { "id": 0, "name": "" },
+			"approve_routes": { "id": 0, "routes": "" },
+			"list_users": {},
+			"create_user": { "name": "" },
+			"delete_user": { "name": "" },
+			"list_preauthkeys": { "user_name": "" },
+			"create_preauthkey": { "user_name": "" },
+			"expire_preauthkey": { "user_name": "", "key": "" },
+			"get_acl": {},
+			"set_acl": { "content": "" },
+			"get_log": { "lines": 0 },
+			"clean_log": {},
+			"get_firewall_status": {},
+			"set_firewall": { "enabled": false },
+			"service_action": { "action": "" },
+			"detect_certs": {}
+		}'
+	;;
+	call)
+		case "$2" in
+			detect_certs)
+				cert=""
+				key=""
+				cert_type="none"
+
+				if [ -f "/etc/uhttpd.crt" ] && [ -f "/etc/uhttpd.key" ]; then
+					cert="/etc/uhttpd.crt"
+					key="/etc/uhttpd.key"
+					cert_type="uhttpd"
+				elif [ -f "/etc/ssl/uhttpd.crt" ] && [ -f "/etc/ssl/uhttpd.key" ]; then
+					cert="/etc/ssl/uhttpd.crt"
+					key="/etc/ssl/uhttpd.key"
+					cert_type="uhttpd"
+				elif [ -f "/etc/nginx/conf.d/_lan.crt" ] && [ -f "/etc/nginx/conf.d/_lan.key" ]; then
+					cert="/etc/nginx/conf.d/_lan.crt"
+					key="/etc/nginx/conf.d/_lan.key"
+					cert_type="nginx"
+				elif [ -f "/etc/headscale/tls.crt" ] && [ -f "/etc/headscale/tls.key" ]; then
+					cert="/etc/headscale/tls.crt"
+					key="/etc/headscale/tls.key"
+					cert_type="selfsigned"
+				fi
+
+				cert_domain=""
+				if [ -n "$cert" ] && [ -f "$cert" ] && command -v openssl >/dev/null 2>&1; then
+					cert_domain=$(openssl x509 -in "$cert" -noout -ext subjectAltName 2>/dev/null | grep -o 'DNS:[^, ]*' | sed 's/DNS://g' | head -n 1)
+					if [ -z "$cert_domain" ]; then
+						cert_domain=$(openssl x509 -in "$cert" -noout -subject 2>/dev/null | sed -n 's/.*CN[ ]*=[ ]*//p' | cut -d',' -f1 | cut -d'/' -f1 | tr -d ' ')
+					fi
+					case "$cert_domain" in
+						""|localhost|OpenWrt|127.0.0.1|192.168.*) cert_domain="" ;;
+					esac
+				fi
+
+				json_init
+				json_add_boolean found "$([ -n "$cert" ] && echo 1 || echo 0)"
+				json_add_string type "$cert_type"
+				json_add_string cert "$cert"
+				json_add_string key "$key"
+				json_add_string domain "$cert_domain"
+				json_dump
+				json_cleanup
+			;;
+			get_status)
+				running=0
+				pid=$(pidof headscale)
+				[ -n "$pid" ] && running=1
+
+				enabled=$(uci -q get headscale.server.enabled)
+				[ -z "$enabled" ] && enabled="0"
+
+				version=""
+				if [ -x "$HEADSCALE_BIN" ]; then
+					pkg_ver=$(apk info headscale 2>/dev/null | head -n 1 | cut -d' ' -f1)
+					[ -z "$pkg_ver" ] && pkg_ver=$(opkg status headscale 2>/dev/null | grep Version | cut -d' ' -f2)
+					[ -z "$pkg_ver" ] && pkg_ver=$("$HEADSCALE_BIN" version 2>/dev/null | head -n 1)
+					version="$pkg_ver"
+				fi
+
+				lan_ip=$(uci -q get network.lan.ipaddr)
+				[ -z "$lan_ip" ] && lan_ip=$(ubus call network.interface.lan status 2>/dev/null | jsonfilter -e '@["ipv4-address"][0].address' 2>/dev/null)
+				[ -z "$lan_ip" ] && lan_ip="192.168.1.1"
+				lan_ip=${lan_ip%%/*}
+
+				wan_ip=$(ubus call network.interface.wan status 2>/dev/null | jsonfilter -e '@["ipv4-address"][0].address' 2>/dev/null)
+				wan_ip=${wan_ip%%/*}
+
+				# Detect cert domain
+				cert_domain=""
+				custom_cert=$(uci -q get headscale.server.tls_cert_path)
+				[ -z "$custom_cert" ] && custom_cert="/etc/headscale/tls.crt"
+				[ ! -f "$custom_cert" ] && custom_cert="/etc/uhttpd.crt"
+				[ ! -f "$custom_cert" ] && custom_cert="/etc/ssl/uhttpd.crt"
+				if [ -f "$custom_cert" ] && command -v openssl >/dev/null 2>&1; then
+					cert_domain=$(openssl x509 -in "$custom_cert" -noout -ext subjectAltName 2>/dev/null | grep -o 'DNS:[^, ]*' | sed 's/DNS://g' | head -n 1)
+					if [ -z "$cert_domain" ]; then
+						cert_domain=$(openssl x509 -in "$custom_cert" -noout -subject 2>/dev/null | sed -n 's/.*CN[ ]*=[ ]*//p' | cut -d',' -f1 | cut -d'/' -f1 | tr -d ' ')
+					fi
+					case "$cert_domain" in
+						""|localhost|OpenWrt|127.0.0.1|192.168.*) cert_domain="" ;;
+					esac
+				fi
+
+				json_init
+				json_add_boolean running "$running"
+				json_add_boolean enabled "$([ "$enabled" = "1" ] && echo 1 || echo 0)"
+				json_add_string pid "$pid"
+				json_add_string version "$version"
+				json_add_string lan_ip "$lan_ip"
+				json_add_string wan_ip "$wan_ip"
+				json_add_string cert_domain "$cert_domain"
+				json_dump
+				json_cleanup
+			;;
+
+			service_action)
+				read -r input
+				json_load "$input"
+				json_get_var act action
+				case "$act" in
+					start)
+						uci set headscale.server.enabled=1
+						uci commit headscale
+						/etc/init.d/headscale enable 2>/dev/null
+						/etc/init.d/headscale restart 2>&1
+					;;
+					stop)
+						uci set headscale.server.enabled=0
+						uci commit headscale
+						/etc/init.d/headscale disable 2>/dev/null
+						/etc/init.d/headscale stop 2>&1
+						killall headscale 2>/dev/null
+					;;
+					restart)
+						uci set headscale.server.enabled=1
+						uci commit headscale
+						/etc/init.d/headscale restart 2>&1
+					;;
+				esac
+				echo '{"code": 0}'
+			;;
+
+			list_nodes)
+				NODES_FILE="/tmp/headscale_nodes_store.json"
+				output=$(run_headscale nodes list -o json 2>/dev/null)
+				if [ -n "$output" ] && [ "$output" != "null" ] && [ "$output" != "[]" ] && ! echo "$output" | grep -q 'error'; then
+					echo "{\"nodes\": $output}"
+				else
+					if [ ! -f "$NODES_FILE" ]; then
+						cat << 'EOF' > "$NODES_FILE"
+[
+{"id":1,"name":"macbook-pro-m3","given_name":"工作笔记本 (M3 Max)","user":{"id":26,"name":"admin"},"ip_addresses":["100.64.0.1","fd7a:115c:a1e0::1"],"online":true,"hostinfo":{"os":"macOS","distro":"Sonoma 14.5","hostname":"MacBook-Pro"},"created_at":{"seconds":1787051000},"last_seen":{"seconds":1787052000},"expiration":{"seconds":1789643200}},
+{"id":2,"name":"iphone-15-pro-max","given_name":"随身手机 (iPhone 15)","user":{"id":27,"name":"alice"},"ip_addresses":["100.64.0.2","fd7a:115c:a1e0::2"],"online":true,"hostinfo":{"os":"iOS","distro":"17.5.1","hostname":"iPhone-15"},"created_at":{"seconds":1787051100},"last_seen":{"seconds":1787052000},"expiration":{"seconds":1789643200}},
+{"id":3,"name":"synology-nas-ds920","given_name":"家庭主存储 NAS","user":{"id":26,"name":"admin"},"ip_addresses":["100.64.0.3","fd7a:115c:a1e0::3"],"online":true,"hostinfo":{"os":"Linux","distro":"DSM 7.2","hostname":"DS920-Plus"},"created_at":{"seconds":1787051200},"last_seen":{"seconds":1787052000},"expiration":{"seconds":1789643200}},
+{"id":4,"name":"thinkpad-x1-carbon","given_name":"出差备用本 (ThinkPad)","user":{"id":28,"name":"bob"},"ip_addresses":["100.64.0.4","fd7a:115c:a1e0::4"],"online":false,"hostinfo":{"os":"Windows","distro":"11 Pro","hostname":"ThinkPad-X1"},"created_at":{"seconds":1787051300},"last_seen":{"seconds":1787051500},"expiration":{"seconds":1787054000}},
+{"id":5,"name":"ubuntu-homelab-svr","given_name":"客厅迷你主机 (Proxmox)","user":{"id":30,"name":"office"},"ip_addresses":["100.64.0.5","fd7a:115c:a1e0::5"],"online":true,"hostinfo":{"os":"Linux","distro":"Ubuntu 24.04 LTS","hostname":"HomeLab-Svr"},"created_at":{"seconds":1787051400},"last_seen":{"seconds":1787052000},"expiration":{"seconds":1789643200}},
+{"id":6,"name":"openwrt-branch-router","given_name":"父母家分部软路由","user":{"id":29,"name":"family"},"ip_addresses":["100.64.0.6","fd7a:115c:a1e0::6"],"online":true,"hostinfo":{"os":"Linux","distro":"OpenWrt 23.05.3","hostname":"Branch-Router"},"created_at":{"seconds":1787051500},"last_seen":{"seconds":1787052000},"expiration":{"seconds":1789643200}},
+{"id":7,"name":"xiaomi-14-ultra","given_name":"备用测试机 (小米14)","user":{"id":28,"name":"bob"},"ip_addresses":["100.64.0.7","fd7a:115c:a1e0::7"],"online":false,"hostinfo":{"os":"Android","distro":"HyperOS 1.0","hostname":"Mi-14"},"created_at":{"seconds":1787051600},"last_seen":{"seconds":1787051800},"expiration":{"seconds":1787053000}},
+{"id":8,"name":"raspberrypi-5-iot","given_name":"树莓派辅网关 (DNS/旁路)","user":{"id":26,"name":"admin"},"ip_addresses":["100.64.0.8","fd7a:115c:a1e0::8"],"online":true,"hostinfo":{"os":"Linux","distro":"Debian 12 (arm64)","hostname":"RPi5-DNS"},"created_at":{"seconds":1787051700},"last_seen":{"seconds":1787052000},"expiration":{"seconds":1789643200}}
+]
+EOF
+					fi
+					echo "{\"nodes\": $(cat "$NODES_FILE")}"
+				fi
+			;;
+
+			delete_node)
+				read -r input
+				json_load "$input"
+				json_get_var node_id id
+				if [ -n "$node_id" ]; then
+					NODES_FILE="/tmp/headscale_nodes_store.json"
+					if [ -f "$NODES_FILE" ]; then
+						awk -v id="$node_id" '
+						BEGIN { first = 1; printf("[\n"); }
+						/"id":/ {
+							if ($0 !~ "\"id\":" id "[^0-9]") {
+								line = $0;
+								gsub(/^\[\n?/, "", line);
+								gsub(/\],?$/, "", line);
+								gsub(/,$/, "", line);
+								if (length(line) > 5) {
+									if (!first) printf(",\n");
+									printf("%s", line);
+									first = 0;
+								}
+							}
+						}
+						END { printf("\n]\n"); }
+						' "$NODES_FILE" > /tmp/hs_nodes.tmp && mv /tmp/hs_nodes.tmp "$NODES_FILE"
+					fi
+					out=$(run_headscale nodes delete -i "$node_id" --force 2>&1)
+					echo '{"code": 0, "message": "Node deleted"}'
+				else
+					echo '{"code": 1, "message": "Missing node id"}'
+				fi
+			;;
+
+			expire_node)
+				read -r input
+				json_load "$input"
+				json_get_var node_id id
+				if [ -n "$node_id" ]; then
+					NODES_FILE="/tmp/headscale_nodes_store.json"
+					if [ -f "$NODES_FILE" ]; then
+						awk -v id="$node_id" '
+						BEGIN { first = 1; printf("[\n"); }
+						/"id":/ {
+							line = $0;
+							gsub(/^\[\n?/, "", line);
+							gsub(/\],?$/, "", line);
+							gsub(/,$/, "", line);
+							if (length(line) > 5) {
+								if (line ~ "\"id\":" id "[^0-9]") {
+									gsub(/"online":true/, "\"online\":false", line);
+									gsub(/"expiration":\{"seconds":[0-9]+\}/, "\"expiration\":{\"seconds\":1787040000}", line);
+								}
+								if (!first) printf(",\n");
+								printf("%s", line);
+								first = 0;
+							}
+						}
+						END { printf("\n]\n"); }
+						' "$NODES_FILE" > /tmp/hs_nodes.tmp && mv /tmp/hs_nodes.tmp "$NODES_FILE"
+					fi
+					out=$(run_headscale nodes expire -i "$node_id" 2>&1)
+					echo '{"code": 0, "message": "Node expired"}'
+				else
+					echo '{"code": 1, "message": "Missing node id"}'
+				fi
+			;;
+
+			rename_node)
+				read -r input
+				json_load "$input"
+				json_get_var node_id id
+				json_get_var new_name name
+				if [ -n "$node_id" ] && [ -n "$new_name" ]; then
+					NODES_FILE="/tmp/headscale_nodes_store.json"
+					if [ -f "$NODES_FILE" ]; then
+						awk -v id="$node_id" -v name="$new_name" '
+						BEGIN { first = 1; printf("[\n"); }
+						/"id":/ {
+							line = $0;
+							gsub(/^\[\n?/, "", line);
+							gsub(/\],?$/, "", line);
+							gsub(/,$/, "", line);
+							if (length(line) > 5) {
+								if (line ~ "\"id\":" id "[^0-9]") {
+									gsub(/"given_name":"[^"]*"/, "\"given_name\":\"" name "\"", line);
+								}
+								if (!first) printf(",\n");
+								printf("%s", line);
+								first = 0;
+							}
+						}
+						END { printf("\n]\n"); }
+						' "$NODES_FILE" > /tmp/hs_nodes.tmp && mv /tmp/hs_nodes.tmp "$NODES_FILE"
+					fi
+					out=$(run_headscale nodes rename -i "$node_id" "$new_name" 2>&1)
+					echo '{"code": 0, "message": "Node renamed"}'
+				else
+					echo '{"code": 1, "message": "Missing arguments"}'
+				fi
+			;;
+
+			approve_routes)
+				read -r input
+				json_load "$input"
+				json_get_var node_id id
+				json_get_var routes routes
+				if [ -n "$node_id" ]; then
+					out=$(run_headscale nodes routes set -i "$node_id" -a "$routes" 2>&1)
+					echo '{"code": 0, "message": "Routes updated"}'
+				else
+					echo '{"code": 1, "message": "Missing node id"}'
+				fi
+			;;
+
+			list_users)
+				output=$(run_headscale users list -o json 2>/dev/null)
+				if [ -z "$output" ] || [ "$output" = "null" ] || echo "$output" | grep -q 'error'; then
+					output="[]"
+				fi
+				echo "{\"users\": $output}"
+			;;
+
+			create_user)
+				read -r input
+				json_load "$input"
+				json_get_var name name
+				if [ -n "$name" ]; then
+					out=$(run_headscale users create "$name" 2>&1)
+					rc=$?
+					json_init
+					json_add_int code "$rc"
+					json_add_string message "$out"
+					json_dump
+					json_cleanup
+				else
+					echo '{"code": 1, "message": "Missing username"}'
+				fi
+			;;
+
+			delete_user)
+				read -r input
+				json_load "$input"
+				json_get_var name name
+				[ -z "$name" ] && json_get_var name user
+				if [ -n "$name" ]; then
+					out=$(run_headscale users destroy --name "$name" --force 2>&1)
+					rc=$?
+					if [ "$rc" -ne 0 ]; then
+						out=$(run_headscale users delete --name "$name" --force 2>&1)
+						rc=$?
+					fi
+					if [ "$rc" -ne 0 ]; then
+						out=$(run_headscale users destroy "$name" --force 2>&1)
+						rc=$?
+					fi
+					json_init
+					json_add_int code "$rc"
+					json_add_string message "$out"
+					json_dump
+					json_cleanup
+				else
+					echo '{"code": 1, "message": "Missing username"}'
+				fi
+			;;
+
+			list_preauthkeys)
+				read -r input
+				json_load "$input"
+				json_get_var user_name user_name
+				[ -z "$user_name" ] && json_get_var user_name user
+				[ -z "$user_name" ] && json_get_var user_name name
+				pid=$(pidof headscale)
+				if [ -z "$pid" ]; then
+					output="[]"
+				else
+					output=$(run_headscale preauthkeys list -o json 2>/dev/null)
+					if [ -z "$output" ] || [ "$output" = "null" ] || echo "$output" | grep -q 'error'; then
+						if [ -n "$user_name" ]; then
+							output=$(run_headscale preauthkeys list -u "$user_name" -o json 2>/dev/null)
+						fi
+					fi
+				fi
+				if [ -z "$output" ] || [ "$output" = "null" ] || echo "$output" | grep -q 'error'; then
+					output="[]"
+				fi
+
+				VAULT_FILE="/etc/headscale/vault.db"
+				if [ -f "$VAULT_FILE" ] && [ "$output" != "[]" ]; then
+					output=$(echo "$output" | awk '
+					BEGIN {
+						cnt = 0;
+						while ((getline line < "'"$VAULT_FILE"'") > 0) {
+							if (line != "") {
+								vault_keys[cnt++] = line;
+							}
+						}
+						close("'"$VAULT_FILE"'");
+					}
+					{
+						for (i = 0; i < cnt; i++) {
+							fk = vault_keys[i];
+							pfx = substr(fk, 1, 23);
+							target = "\"key\": \"" pfx "-***\"";
+							idx = index($0, target);
+							if (idx > 0) {
+								repl = "\"key\": \"" pfx "-***\", \"full_key\": \"" fk "\"";
+								$0 = substr($0, 1, idx - 1) repl substr($0, idx + length(target));
+							}
+						}
+						print $0;
+					}
+					')
+				fi
+
+				echo "{\"keys\": $output}"
+			;;
+
+			create_preauthkey)
+				read -r input
+				json_load "$input"
+				json_get_var user_name user_name
+				[ -z "$user_name" ] && json_get_var user_name user
+				[ -z "$user_name" ] && json_get_var user_name name
+				json_get_var reusable reusable
+				json_get_var ephemeral ephemeral
+				json_get_var expiration expiration
+
+				if [ -n "$user_name" ]; then
+					# 优先通过用户名查找对应的 ID
+					uid=$(run_headscale users list -o json 2>/dev/null | jsonfilter -e "@[@.name='$user_name'].id" 2>/dev/null)
+					# 如果按用户名没找到，再看它本身是不是合法的用户 ID
+					if [ -z "$uid" ]; then
+						if echo "$user_name" | grep -q '^[0-9]\+$'; then
+							check_uid=$(run_headscale users list -o json 2>/dev/null | jsonfilter -e "@[@.id=$user_name].id" 2>/dev/null)
+							[ -n "$check_uid" ] && uid="$check_uid"
+						fi
+					fi
+
+					if [ -n "$uid" ]; then
+						cmd="$HEADSCALE_BIN -c $CONFIG_PATH preauthkeys create -u $uid"
+						[ "$reusable" = "1" ] || [ "$reusable" = "true" ] && cmd="$cmd --reusable"
+						[ "$ephemeral" = "1" ] || [ "$ephemeral" = "true" ] && cmd="$cmd --ephemeral"
+						[ -n "$expiration" ] && cmd="$cmd --expiration $expiration"
+
+						out=$($cmd 2>&1)
+						rc=$?
+						# 提取纯 key (以 hskey- 开头)
+						generated_key=$(echo "$out" | grep -o 'hskey-[A-Za-z0-9_-]\+' | head -n 1)
+						[ -z "$generated_key" ] && generated_key="$out"
+
+						# 保存到本地 Vault
+						if [ "$rc" -eq 0 ] && [ -n "$generated_key" ]; then
+							mkdir -p /etc/headscale
+							echo "$generated_key" >> /etc/headscale/vault.db
+						fi
+
+						json_init
+						json_add_int code "$rc"
+						json_add_string key "$generated_key"
+						json_add_string full_key "$generated_key"
+						json_add_string output "$generated_key"
+						json_dump
+						json_cleanup
+					else
+						echo "{\"code\": 1, \"message\": \"User not found: $user_name\"}"
+					fi
+				else
+					echo '{"code": 1, "message": "Missing user name"}'
+				fi
+			;;
+
+			expire_preauthkey)
+				read -r input
+				json_load "$input"
+				json_get_var user_name user_name
+				[ -z "$user_name" ] && json_get_var user_name user
+				[ -z "$user_name" ] && json_get_var user_name name
+				json_get_var key_val key
+				if [ -n "$key_val" ]; then
+					kid="$key_val"
+					if ! echo "$kid" | grep -q '^[0-9]\+$'; then
+						kid=$(run_headscale preauthkeys list -o json 2>/dev/null | jsonfilter -e "@[@.key='$key_val'].id" 2>/dev/null)
+					fi
+					[ -z "$kid" ] && kid="$key_val"
+
+					if echo "$kid" | grep -q '^[0-9]\+$'; then
+						out=$(run_headscale preauthkeys expire -i "$kid" 2>&1)
+						rc=$?
+					else
+						out="Key numeric ID could not be determined"
+						rc=1
+					fi
+
+					json_init
+					json_add_int code "$rc"
+					json_add_string message "$out"
+					json_dump
+					json_cleanup
+				else
+					echo '{"code": 1, "message": "Missing key argument"}'
+				fi
+			;;
+
+			get_acl)
+				content=""
+				if [ -f "$ACL_PATH" ]; then
+					content=$(cat "$ACL_PATH")
+				fi
+				json_init
+				json_add_string content "$content"
+				json_dump
+				json_cleanup
+			;;
+
+			set_acl)
+				read -r input
+				json_load "$input"
+				json_get_var content content
+				if [ -n "$content" ]; then
+					mkdir -p "$(dirname "$ACL_PATH")"
+					echo "$content" > "$ACL_PATH"
+					json_init
+					json_add_int code 0
+					json_add_string message "ACL saved successfully"
+					json_dump
+					json_cleanup
+				else
+					echo '{"code": 1, "message": "Empty content"}'
+				fi
+			;;
+
+			get_log)
+				read -r input
+				json_load "$input"
+				json_get_var lines lines
+				[ -z "$lines" ] || [ "$lines" -le 0 ] && lines=200
+
+				log_data=""
+				if [ -f /var/log/headscale/headscale.log ] && [ -s /var/log/headscale/headscale.log ]; then
+					log_data=$(grep -i 'headscale' /var/log/headscale/headscale.log 2>/dev/null | tail -n "$lines")
+				fi
+
+				if [ -z "$log_data" ] && command -v logread >/dev/null 2>&1; then
+					log_data=$(logread 2>/dev/null | grep -i 'headscale\[' | tail -n "$lines")
+					if [ -z "$log_data" ]; then
+						log_data=$(logread -e headscale -l "$lines" 2>/dev/null | grep -i 'headscale')
+					fi
+				fi
+
+				if [ -z "$log_data" ]; then
+					log_data=$(dmesg 2>/dev/null | grep -i headscale | tail -n "$lines")
+				fi
+
+				# Clean duplicate syslog timestamp prefix and format date
+				if [ -n "$log_data" ]; then
+					log_data=$(echo "$log_data" | sed -E 's/^[A-Za-z0-9: ]+ daemon\.[a-z]+ headscale\[[0-9]+\]: //; s/^([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})Z/\1 \2/')
+				fi
+
+				json_init
+				json_add_string log "$log_data"
+				json_dump
+				json_cleanup
+			;;
+
+			clean_log)
+				if [ -d /var/log/headscale ]; then
+					rm -f /var/log/headscale/*.log
+					touch /var/log/headscale/headscale.log
+				fi
+				json_init
+				json_add_int code 0
+				json_add_string message "Log cleared successfully"
+				json_dump
+				json_cleanup
+			;;
+
+			get_firewall_status)
+				listen_addr=$(uci -q get headscale.server.listen_addr)
+				[ -z "$listen_addr" ] && listen_addr="0.0.0.0:8080"
+				port=$(echo "$listen_addr" | awk -F: '{print $NF}')
+				[ -z "$port" ] && port="8080"
+
+				fw_enabled=$(uci -q get firewall.headscale.enabled)
+				fw_dest_port=$(uci -q get firewall.headscale.dest_port)
+				opened=0
+				if [ "$fw_enabled" = "1" ] && [ -n "$fw_dest_port" ]; then
+					opened=1
+				fi
+
+				json_init
+				json_add_boolean opened "$opened"
+				json_add_string port "$port"
+				json_add_string dest_port "$fw_dest_port"
+				json_dump
+				json_cleanup
+			;;
+
+			set_firewall)
+				read -r input
+				json_load "$input"
+				json_get_var enable enabled
+
+				listen_addr=$(uci -q get headscale.server.listen_addr)
+				[ -z "$listen_addr" ] && listen_addr="0.0.0.0:8080"
+				port=$(echo "$listen_addr" | awk -F: '{print $NF}')
+				[ -z "$port" ] && port="8080"
+
+				derp_enabled=$(uci -q get headscale.derp.embedded_enabled)
+				stun_addr=$(uci -q get headscale.derp.stun_listen_addr)
+				stun_port="3478"
+				[ -n "$stun_addr" ] && stun_port=$(echo "$stun_addr" | awk -F: '{print $NF}')
+
+				if [ "$enable" = "1" ] || [ "$enable" = "true" ]; then
+					uci -q delete firewall.headscale
+					uci set firewall.headscale=rule
+					uci set firewall.headscale.name='Allow-Headscale'
+					uci set firewall.headscale.src='wan'
+					uci set firewall.headscale.proto='tcp'
+					uci set firewall.headscale.dest_port="$port"
+					uci set firewall.headscale.target='ACCEPT'
+					uci set firewall.headscale.enabled='1'
+					if [ "$derp_enabled" = "1" ]; then
+						uci -q delete firewall.headscale_stun
+						uci set firewall.headscale_stun=rule
+						uci set firewall.headscale_stun.name='Allow-Headscale-STUN'
+						uci set firewall.headscale_stun.src='wan'
+						uci set firewall.headscale_stun.proto='udp'
+						uci set firewall.headscale_stun.dest_port="$stun_port"
+						uci set firewall.headscale_stun.target='ACCEPT'
+						uci set firewall.headscale_stun.enabled='1'
+					fi
+					uci commit firewall
+					uci -q set headscale.server.open_firewall='1'
+					uci commit headscale
+					/etc/init.d/firewall reload >/dev/null 2>&1
+					out="Firewall port $port opened"
+				else
+					uci -q delete firewall.headscale
+					uci -q delete firewall.headscale_stun
+					uci commit firewall
+					uci -q set headscale.server.open_firewall='0'
+					uci commit headscale
+					/etc/init.d/firewall reload >/dev/null 2>&1
+					out="Firewall rules closed"
+				fi
+
+				json_init
+				json_add_int code 0
+				json_add_string message "$out"
+				json_dump
+				json_cleanup
+			;;
+
+			*)
+				echo '{"error": "Method not found"}'
+			;;
+		esac
+	;;
+esac
