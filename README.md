@@ -121,15 +121,11 @@ luci-app-headscale/
 │   └── users.js                                   # Multi-tenant user management view
 ├── po/zh_Hans/headscale.po                        # Simplified Chinese translations
 └── root/
-    ├── etc/
-    │   ├── config/headscale                       # Default UCI configuration schema
-    │   └── uci-defaults/luci-headscale            # Post-install auto-setup scripts
-    ├── usr/
-    │   ├── libexec/rpcd/luci.headscale            # Backend RPCD provider script
-    │   └── share/
-    │       ├── headscale/headscale.sh             # Core daemon runner and config generator
-    │       ├── acl.d/luci-app-headscale.json      # Ubus ACL permissions schema
-    │       └── luci/menu.d/luci-app-headscale.json # LuCI navigation menu definition
+    └── usr/
+        ├── libexec/rpcd/luci.headscale            # Backend RPCD provider script
+        └── share/
+            ├── acl.d/luci-app-headscale.json      # Ubus ACL permissions schema
+            └── luci/menu.d/luci-app-headscale.json # LuCI navigation menu definition
 ```
 
 ---
