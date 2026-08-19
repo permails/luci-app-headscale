@@ -1,6 +1,6 @@
 {
 	"admin/vpn/headscale": {
-		"title": "Headscale",
+		"title": "Headscale Server",
 		"action": {
 			"type": "firstchild"
 		},

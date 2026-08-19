@@ -572,7 +572,10 @@ msgid "Go to User Management"
 msgstr "前往用户管理"
 
 msgid "Headscale"
-msgstr "Headscale"
+msgstr "异地组网服务器"
+
+msgid "Headscale Server"
+msgstr "Headscale服务器"
 
 msgid "Headscale - Access Control Policy (ACL)"
 msgstr "Headscale - ACL 访问控制策略"
