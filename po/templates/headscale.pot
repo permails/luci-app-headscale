@@ -1,9 +1,7 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8
-"
-"Project-Id-Version: luci-app-headscale
-"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: luci-app-headscale\n"
 
 msgid "(File Sharing SMB)"
 msgstr ""
@@ -69,6 +67,9 @@ msgid "ACCEPT"
 msgstr ""
 
 msgid "ACL Policy"
+msgstr ""
+
+msgid "ACL policy reset to default (pending save)."
 msgstr ""
 
 msgid "ACL policy updated successfully."
@@ -156,6 +157,9 @@ msgid "Allow ["
 msgstr ""
 
 msgid "Allow all connected devices to communicate on all ports."
+msgstr ""
+
+msgid "Allow devices to establish secure Tailscale SSH sessions without managing SSH keys."
 msgstr ""
 
 msgid "Allow enrolling multiple devices with this single key."
@@ -257,7 +261,7 @@ msgstr ""
 msgid "Clear Logs"
 msgstr ""
 
-msgid "Click "Create Pre-Auth Key", select your user, check "Reusable" so all your family devices can use the same key, and click Create. Copy the generated key."
+msgid "Click \"Create Pre-Auth Key\", select your user, check \"Reusable\" so all your family devices can use the same key, and click Create. Copy the generated key."
 msgstr ""
 
 msgid "Click to manage users"
@@ -368,6 +372,12 @@ msgstr ""
 msgid "Debug (Detailed)"
 msgstr ""
 
+msgid "Default Full Interconnect Policy"
+msgstr ""
+
+msgid "Define traffic flow permissions between nodes, users, or subnets."
+msgstr ""
+
 msgid "Delete"
 msgstr ""
 
@@ -384,6 +394,9 @@ msgid "Description & Purpose"
 msgstr ""
 
 msgid "Destination & Ports"
+msgstr ""
+
+msgid "Detected SSL Domain:"
 msgstr ""
 
 msgid "Detected SSL Domain: "
@@ -527,6 +540,9 @@ msgstr ""
 msgid "Filter log entries..."
 msgstr ""
 
+msgid "Filter:"
+msgstr ""
+
 msgid "Filter: "
 msgstr ""
 
@@ -599,16 +615,25 @@ msgstr ""
 msgid "Headscale - Users / Namespaces"
 msgstr ""
 
+msgid "Headscale Server"
+msgstr ""
+
+msgid "Headscale daemon must be running in order to create users, generate pre-auth keys, or manage nodes."
+msgstr ""
+
 msgid "Headscale is an open-source, self-hosted implementation of the Tailscale coordination server."
 msgstr ""
 
-msgid "Headscale requires devices to belong to a user. Enter a simple username (e.g. "admin" or "family") and click "Create User"."
+msgid "Headscale requires devices to belong to a user. Enter a simple username (e.g. \"admin\" or \"family\") and click \"Create User\"."
 msgstr ""
 
-msgid "Hold Option (⌥) and click top menu bar Tailscale icon -> "Custom Login Server" -> enter URL."
+msgid "Headscale service is currently stopped."
 msgstr ""
 
-msgid "Hold Shift and right-click Tailscale tray icon -> "Custom Login Server" -> enter URL; or run in CMD/PowerShell."
+msgid "Hold Option (⌥) and click top menu bar Tailscale icon -> \"Custom Login Server\" -> enter URL."
+msgstr ""
+
+msgid "Hold Shift and right-click Tailscale tray icon -> \"Custom Login Server\" -> enter URL; or run in CMD/PowerShell."
 msgstr ""
 
 msgid "Home / Local LAN Only"
@@ -650,7 +675,7 @@ msgstr ""
 msgid "Info (Standard)"
 msgstr ""
 
-msgid "Install official Tailscale App on your phone/PC, enter your Server URL and Auth Key to connect. Once connected, your device will appear in the "Nodes" tab!"
+msgid "Install official Tailscale App on your phone/PC, enter your Server URL and Auth Key to connect. Once connected, your device will appear in the \"Nodes\" tab!"
 msgstr ""
 
 msgid "Install official Tailscale package, then execute login command in root terminal."
@@ -725,7 +750,7 @@ msgstr ""
 msgid "Log file downloaded: "
 msgstr ""
 
-msgid "Log in to your optical ISP modem admin page -> find "Port Forwarding / Virtual Server" -> forward external TCP 8080 to this OpenWrt router WAN IP."
+msgid "Log in to your optical ISP modem admin page -> find \"Port Forwarding / Virtual Server\" -> forward external TCP 8080 to this OpenWrt router WAN IP."
 msgstr ""
 
 msgid "Logging"
@@ -737,7 +762,7 @@ msgstr ""
 msgid "MagicDNS Base Domain"
 msgstr ""
 
-msgid "Make sure "Enable Headscale Service" is checked. If you need remote access outside your home, enter your DDNS domain in "Server URL" (e.g. http://myrouter.ddns.net:8080) and check "Open Firewall Port". Default port is 8080."
+msgid "Make sure \"Enable Headscale Service\" is checked. If you need remote access outside your home, enter your DDNS domain in \"Server URL\" (e.g. http://myrouter.ddns.net:8080) and check \"Open Firewall Port\". Default port is 8080."
 msgstr ""
 
 msgid "Manage Headscale users (namespaces) for segmenting registered nodes and generating authentication keys."
@@ -860,10 +885,16 @@ msgstr ""
 msgid "One-click Command:"
 msgstr ""
 
+msgid "One-click presets for common mesh networking policy scenarios."
+msgstr ""
+
 msgid "One-liner Command for Device Registration:"
 msgstr ""
 
 msgid "Online"
+msgstr ""
+
+msgid "Online:"
 msgstr ""
 
 msgid "Online: "
@@ -884,7 +915,13 @@ msgstr ""
 msgid "Open WAN firewall port (%s/tcp) to allow external connections?"
 msgstr ""
 
-msgid "Open iOS system Settings -> scroll down to Tailscale -> enable "Custom Server" -> paste server URL."
+msgid "Open iOS system Settings -> scroll down to Tailscale -> enable \"Custom Server\" -> paste server URL."
+msgstr ""
+
+msgid "Operation failed:"
+msgstr ""
+
+msgid "Operation failed: "
 msgstr ""
 
 msgid "Options"
@@ -929,6 +966,12 @@ msgstr ""
 msgid "Please specify target device."
 msgstr ""
 
+msgid "Policy"
+msgstr ""
+
+msgid "Port:"
+msgstr ""
+
 msgid "Port: "
 msgstr ""
 
@@ -950,7 +993,13 @@ msgstr ""
 msgid "Program Version"
 msgstr ""
 
+msgid "Quick Guide"
+msgstr ""
+
 msgid "Quick Options & Presets"
+msgstr ""
+
+msgid "Quick Presets & Policy Tools"
 msgstr ""
 
 msgid "REGISTERED NODES"
@@ -996,6 +1045,12 @@ msgid "Reset"
 msgstr ""
 
 msgid "Reset ACL policy to Default (Allow All Traffic)?"
+msgstr ""
+
+msgid "Reset ACL rules to allow all connected nodes to freely communicate on all ports (*:*)."
+msgstr ""
+
+msgid "Reset ACL rules to default Allow-All policy?"
 msgstr ""
 
 msgid "Reset to Default (Allow All)"
@@ -1049,6 +1104,9 @@ msgstr ""
 msgid "Routes:"
 msgstr ""
 
+msgid "Rows:"
+msgstr ""
+
 msgid "Rows: "
 msgstr ""
 
@@ -1100,7 +1158,7 @@ msgstr ""
 msgid "Search log keywords..."
 msgstr ""
 
-msgid "Select a user above and click "Generate Key" to create your first authentication token."
+msgid "Select a user above and click \"Generate Key\" to create your first authentication token."
 msgstr ""
 
 msgid "Sequential (Linear)"
@@ -1130,7 +1188,7 @@ msgstr ""
 msgid "Setup Guide"
 msgstr ""
 
-msgid "Simply check "Open Firewall Port" in the Settings tab. Remote mobile devices can connect anytime using your DDNS domain name."
+msgid "Simply check \"Open Firewall Port\" in the Settings tab. Remote mobile devices can connect anytime using your DDNS domain name."
 msgstr ""
 
 msgid "Source (Initiator)"
@@ -1193,6 +1251,9 @@ msgstr ""
 msgid "Tagged/Shared"
 msgstr ""
 
+msgid "Tailscale SSH Integration"
+msgstr ""
+
 msgid "Target & Ports (What)"
 msgstr ""
 
@@ -1239,6 +1300,9 @@ msgid "Unique numeric identifier for embedded DERP region."
 msgstr ""
 
 msgid "Unknown"
+msgstr ""
+
+msgid "Unknown error"
 msgstr ""
 
 msgid "Update Frequency"
@@ -1360,3 +1424,4 @@ msgstr ""
 
 msgid "nodes"
 msgstr ""
+

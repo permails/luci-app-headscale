@@ -124,7 +124,7 @@ luci-app-headscale/
     └── usr/
         ├── libexec/rpcd/luci.headscale            # Backend RPCD provider script
         └── share/
-            ├── acl.d/luci-app-headscale.json      # Ubus ACL permissions schema
+            ├── rpcd/acl.d/luci-app-headscale.json # Ubus ACL permissions schema
             └── luci/menu.d/luci-app-headscale.json # LuCI navigation menu definition
 ```
 
@@ -203,7 +203,7 @@ config headscale 'server'
 ## Security Considerations
 
 * **Key Vault Isolation**: `/etc/headscale/vault.db` is readable only by the `root` user and the `rpcd` service context.
-* **RPC Protection**: All remote procedure calls are protected by OpenWrt's standard ubus ACL policies located in `/usr/share/acl.d/luci-app-headscale.json`.
+* **RPC Protection**: All remote procedure calls are protected by OpenWrt's standard ubus ACL policies located in `/usr/share/rpcd/acl.d/luci-app-headscale.json`.
 
 ---
 

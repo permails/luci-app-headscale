@@ -30,6 +30,19 @@ var callDeleteUser = rpc.declare({
 	expect: { code: 0 }
 });
 
+var callGetStatus = rpc.declare({
+	object: 'luci.headscale',
+	method: 'get_status',
+	expect: { }
+});
+
+var callServiceAction = rpc.declare({
+	object: 'luci.headscale',
+	method: 'service_action',
+	params: [ 'action' ],
+	expect: { code: 0 }
+});
+
 function formatDateTime(t) {
 	if (!t) return '-';
 	var d = null;
@@ -56,7 +69,8 @@ return view.extend({
 	load: function() {
 		return Promise.all([
 			callListUsers(),
-			uci.load('headscale')
+			uci.load('headscale'),
+			callGetStatus()
 		]);
 	},
 
@@ -143,9 +157,36 @@ return view.extend({
 	render: function(data) {
 		var self = this;
 		var rawUsers = data[0];
+		var status = data[2] || {};
 		self.rawUsers = Array.isArray(rawUsers) ? rawUsers : ((rawUsers && rawUsers.users) ? rawUsers.users : []);
 		self.stagedCreations = [];
 		self.stagedDeletions = {};
+
+		var handleAddUser = function() {
+			var nameInput = document.getElementById('hs_new_username');
+			var name = nameInput ? nameInput.value.trim() : '';
+			if (!name) return;
+			if (self.stagedCreations.indexOf(name) === -1) {
+				self.stagedCreations.unshift(name);
+				self.markUciChanged();
+			}
+			if (nameInput) nameInput.value = '';
+			self.renderTableRows();
+		};
+
+		var nameInput = E('input', {
+			'type': 'text',
+			'id': 'hs_new_username',
+			'class': 'cbi-input-text',
+			'placeholder': 'alice, bob, family, work',
+			'style': 'width:240px;margin-right:8px;',
+			'keydown': function(ev) {
+				if (ev.key === 'Enter') {
+					ev.preventDefault();
+					handleAddUser();
+				}
+			}
+		});
 
 		self.tableElement = E('table', { 'class': 'table', 'style': 'width:100%;' }, [
 			E('tr', { 'class': 'tr table-titles' }, [
@@ -158,37 +199,42 @@ return view.extend({
 
 		self.renderTableRows();
 
+		var warningBanner = !status.running ? E('div', { 'class': 'alert-message warning', 'style': 'margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;' }, [
+			E('div', {}, [
+				E('strong', {}, [ _('Headscale service is currently stopped.') ]),
+				E('div', { 'style': 'font-size:12px;margin-top:2px;color:#718096;' }, [
+					_('Headscale daemon must be running in order to create users, generate pre-auth keys, or manage nodes.')
+				])
+			]),
+			E('button', {
+				'class': 'btn cbi-button cbi-button-action',
+				'click': function() {
+					ui.showModal(_('Starting Service'), [
+						E('p', { 'class': 'spinning' }, [ _('Enabling and starting Headscale service...') ])
+					]);
+					return callServiceAction('start').then(function() {
+						location.reload();
+					});
+				}
+			}, [ _('Start Service') ])
+		]) : '';
+
 		return E('div', { 'class': 'cbi-map' }, [
 			E('h2', {}, [ _('Headscale - Users') ]),
 			E('div', { 'class': 'cbi-map-descr' }, [
 				_('Manage Headscale users (namespaces) for segmenting registered nodes and generating authentication keys.')
 			]),
+			warningBanner,
 			E('div', { 'class': 'cbi-section' }, [
 				E('h3', {}, [ _('Create New User') ]),
 				E('div', { 'class': 'cbi-section-node' }, [
 					E('div', { 'class': 'cbi-value' }, [
 						E('label', { 'class': 'cbi-value-title' }, [ _('Username') ]),
 						E('div', { 'class': 'cbi-value-field' }, [
-							E('input', {
-								'type': 'text',
-								'id': 'hs_new_username',
-								'class': 'cbi-input-text',
-								'placeholder': 'alice, bob, family, work',
-								'style': 'width:240px;margin-right:8px;'
-							}),
+							nameInput,
 							E('button', {
 								'class': 'btn cbi-button cbi-button-action',
-								'click': function() {
-									var nameInput = document.getElementById('hs_new_username');
-									var name = nameInput ? nameInput.value.trim() : '';
-									if (!name) return;
-									if (self.stagedCreations.indexOf(name) === -1) {
-										self.stagedCreations.unshift(name);
-										self.markUciChanged();
-									}
-									if (nameInput) nameInput.value = '';
-									self.renderTableRows();
-								}
+								'click': handleAddUser
 							}, [ _('Create User') ])
 						])
 					])
@@ -213,7 +259,12 @@ return view.extend({
 			tasks.push(callCreateUser(uName));
 		});
 
-		return Promise.all(tasks).then(function() {
+		return Promise.all(tasks).then(function(results) {
+			(results || []).forEach(function(res) {
+				if (res && res.code && res.code !== 0) {
+					ui.addNotification(null, E('p', {}, [ _('Operation failed: ') + (res.message || _('Unknown error')) ]), 'danger');
+				}
+			});
 			self.stagedCreations = [];
 			self.stagedDeletions = {};
 			self.markUciChanged();

@@ -172,27 +172,11 @@ case "$1" in
 			;;
 
 			list_nodes)
-				NODES_FILE="/tmp/headscale_nodes_store.json"
 				output=$(run_headscale nodes list -o json 2>/dev/null)
-				if [ -n "$output" ] && [ "$output" != "null" ] && [ "$output" != "[]" ] && ! echo "$output" | grep -q 'error'; then
-					echo "{\"nodes\": $output}"
-				else
-					if [ ! -f "$NODES_FILE" ]; then
-						cat << 'EOF' > "$NODES_FILE"
-[
-{"id":1,"name":"macbook-pro-m3","given_name":"工作笔记本 (M3 Max)","user":{"id":26,"name":"admin"},"ip_addresses":["100.64.0.1","fd7a:115c:a1e0::1"],"online":true,"hostinfo":{"os":"macOS","distro":"Sonoma 14.5","hostname":"MacBook-Pro"},"created_at":{"seconds":1787051000},"last_seen":{"seconds":1787052000},"expiration":{"seconds":1789643200}},
-{"id":2,"name":"iphone-15-pro-max","given_name":"随身手机 (iPhone 15)","user":{"id":27,"name":"alice"},"ip_addresses":["100.64.0.2","fd7a:115c:a1e0::2"],"online":true,"hostinfo":{"os":"iOS","distro":"17.5.1","hostname":"iPhone-15"},"created_at":{"seconds":1787051100},"last_seen":{"seconds":1787052000},"expiration":{"seconds":1789643200}},
-{"id":3,"name":"synology-nas-ds920","given_name":"家庭主存储 NAS","user":{"id":26,"name":"admin"},"ip_addresses":["100.64.0.3","fd7a:115c:a1e0::3"],"online":true,"hostinfo":{"os":"Linux","distro":"DSM 7.2","hostname":"DS920-Plus"},"created_at":{"seconds":1787051200},"last_seen":{"seconds":1787052000},"expiration":{"seconds":1789643200}},
-{"id":4,"name":"thinkpad-x1-carbon","given_name":"出差备用本 (ThinkPad)","user":{"id":28,"name":"bob"},"ip_addresses":["100.64.0.4","fd7a:115c:a1e0::4"],"online":false,"hostinfo":{"os":"Windows","distro":"11 Pro","hostname":"ThinkPad-X1"},"created_at":{"seconds":1787051300},"last_seen":{"seconds":1787051500},"expiration":{"seconds":1787054000}},
-{"id":5,"name":"ubuntu-homelab-svr","given_name":"客厅迷你主机 (Proxmox)","user":{"id":30,"name":"office"},"ip_addresses":["100.64.0.5","fd7a:115c:a1e0::5"],"online":true,"hostinfo":{"os":"Linux","distro":"Ubuntu 24.04 LTS","hostname":"HomeLab-Svr"},"created_at":{"seconds":1787051400},"last_seen":{"seconds":1787052000},"expiration":{"seconds":1789643200}},
-{"id":6,"name":"openwrt-branch-router","given_name":"父母家分部软路由","user":{"id":29,"name":"family"},"ip_addresses":["100.64.0.6","fd7a:115c:a1e0::6"],"online":true,"hostinfo":{"os":"Linux","distro":"OpenWrt 23.05.3","hostname":"Branch-Router"},"created_at":{"seconds":1787051500},"last_seen":{"seconds":1787052000},"expiration":{"seconds":1789643200}},
-{"id":7,"name":"xiaomi-14-ultra","given_name":"备用测试机 (小米14)","user":{"id":28,"name":"bob"},"ip_addresses":["100.64.0.7","fd7a:115c:a1e0::7"],"online":false,"hostinfo":{"os":"Android","distro":"HyperOS 1.0","hostname":"Mi-14"},"created_at":{"seconds":1787051600},"last_seen":{"seconds":1787051800},"expiration":{"seconds":1787053000}},
-{"id":8,"name":"raspberrypi-5-iot","given_name":"树莓派辅网关 (DNS/旁路)","user":{"id":26,"name":"admin"},"ip_addresses":["100.64.0.8","fd7a:115c:a1e0::8"],"online":true,"hostinfo":{"os":"Linux","distro":"Debian 12 (arm64)","hostname":"RPi5-DNS"},"created_at":{"seconds":1787051700},"last_seen":{"seconds":1787052000},"expiration":{"seconds":1789643200}}
-]
-EOF
-					fi
-					echo "{\"nodes\": $(cat "$NODES_FILE")}"
+				if [ -z "$output" ] || [ "$output" = "null" ] || echo "$output" | grep -q 'error'; then
+					output="[]"
 				fi
+				echo "{\"nodes\": $output}"
 			;;
 
 			delete_node)
@@ -200,28 +184,13 @@ EOF
 				json_load "$input"
 				json_get_var node_id id
 				if [ -n "$node_id" ]; then
-					NODES_FILE="/tmp/headscale_nodes_store.json"
-					if [ -f "$NODES_FILE" ]; then
-						awk -v id="$node_id" '
-						BEGIN { first = 1; printf("[\n"); }
-						/"id":/ {
-							if ($0 !~ "\"id\":" id "[^0-9]") {
-								line = $0;
-								gsub(/^\[\n?/, "", line);
-								gsub(/\],?$/, "", line);
-								gsub(/,$/, "", line);
-								if (length(line) > 5) {
-									if (!first) printf(",\n");
-									printf("%s", line);
-									first = 0;
-								}
-							}
-						}
-						END { printf("\n]\n"); }
-						' "$NODES_FILE" > /tmp/hs_nodes.tmp && mv /tmp/hs_nodes.tmp "$NODES_FILE"
-					fi
 					out=$(run_headscale nodes delete -i "$node_id" --force 2>&1)
-					echo '{"code": 0, "message": "Node deleted"}'
+					rc=$?
+					json_init
+					json_add_int code "$rc"
+					json_add_string message "$out"
+					json_dump
+					json_cleanup
 				else
 					echo '{"code": 1, "message": "Missing node id"}'
 				fi
@@ -232,30 +201,13 @@ EOF
 				json_load "$input"
 				json_get_var node_id id
 				if [ -n "$node_id" ]; then
-					NODES_FILE="/tmp/headscale_nodes_store.json"
-					if [ -f "$NODES_FILE" ]; then
-						awk -v id="$node_id" '
-						BEGIN { first = 1; printf("[\n"); }
-						/"id":/ {
-							line = $0;
-							gsub(/^\[\n?/, "", line);
-							gsub(/\],?$/, "", line);
-							gsub(/,$/, "", line);
-							if (length(line) > 5) {
-								if (line ~ "\"id\":" id "[^0-9]") {
-									gsub(/"online":true/, "\"online\":false", line);
-									gsub(/"expiration":\{"seconds":[0-9]+\}/, "\"expiration\":{\"seconds\":1787040000}", line);
-								}
-								if (!first) printf(",\n");
-								printf("%s", line);
-								first = 0;
-							}
-						}
-						END { printf("\n]\n"); }
-						' "$NODES_FILE" > /tmp/hs_nodes.tmp && mv /tmp/hs_nodes.tmp "$NODES_FILE"
-					fi
 					out=$(run_headscale nodes expire -i "$node_id" 2>&1)
-					echo '{"code": 0, "message": "Node expired"}'
+					rc=$?
+					json_init
+					json_add_int code "$rc"
+					json_add_string message "$out"
+					json_dump
+					json_cleanup
 				else
 					echo '{"code": 1, "message": "Missing node id"}'
 				fi
@@ -267,29 +219,13 @@ EOF
 				json_get_var node_id id
 				json_get_var new_name name
 				if [ -n "$node_id" ] && [ -n "$new_name" ]; then
-					NODES_FILE="/tmp/headscale_nodes_store.json"
-					if [ -f "$NODES_FILE" ]; then
-						awk -v id="$node_id" -v name="$new_name" '
-						BEGIN { first = 1; printf("[\n"); }
-						/"id":/ {
-							line = $0;
-							gsub(/^\[\n?/, "", line);
-							gsub(/\],?$/, "", line);
-							gsub(/,$/, "", line);
-							if (length(line) > 5) {
-								if (line ~ "\"id\":" id "[^0-9]") {
-									gsub(/"given_name":"[^"]*"/, "\"given_name\":\"" name "\"", line);
-								}
-								if (!first) printf(",\n");
-								printf("%s", line);
-								first = 0;
-							}
-						}
-						END { printf("\n]\n"); }
-						' "$NODES_FILE" > /tmp/hs_nodes.tmp && mv /tmp/hs_nodes.tmp "$NODES_FILE"
-					fi
 					out=$(run_headscale nodes rename -i "$node_id" "$new_name" 2>&1)
-					echo '{"code": 0, "message": "Node renamed"}'
+					rc=$?
+					json_init
+					json_add_int code "$rc"
+					json_add_string message "$out"
+					json_dump
+					json_cleanup
 				else
 					echo '{"code": 1, "message": "Missing arguments"}'
 				fi
@@ -302,7 +238,12 @@ EOF
 				json_get_var routes routes
 				if [ -n "$node_id" ]; then
 					out=$(run_headscale nodes routes set -i "$node_id" -a "$routes" 2>&1)
-					echo '{"code": 0, "message": "Routes updated"}'
+					rc=$?
+					json_init
+					json_add_int code "$rc"
+					json_add_string message "$out"
+					json_dump
+					json_cleanup
 				else
 					echo '{"code": 1, "message": "Missing node id"}'
 				fi
@@ -321,13 +262,18 @@ EOF
 				json_load "$input"
 				json_get_var name name
 				if [ -n "$name" ]; then
-					out=$(run_headscale users create "$name" 2>&1)
-					rc=$?
-					json_init
-					json_add_int code "$rc"
-					json_add_string message "$out"
-					json_dump
-					json_cleanup
+					pid=$(pidof headscale)
+					if [ -z "$pid" ]; then
+						echo '{"code": 1, "message": "Headscale service is stopped. Please start the service first."}'
+					else
+						out=$(run_headscale users create "$name" 2>&1)
+						rc=$?
+						json_init
+						json_add_int code "$rc"
+						json_add_string message "$out"
+						json_dump
+						json_cleanup
+					fi
 				else
 					echo '{"code": 1, "message": "Missing username"}'
 				fi
@@ -339,21 +285,26 @@ EOF
 				json_get_var name name
 				[ -z "$name" ] && json_get_var name user
 				if [ -n "$name" ]; then
-					out=$(run_headscale users destroy --name "$name" --force 2>&1)
-					rc=$?
-					if [ "$rc" -ne 0 ]; then
-						out=$(run_headscale users delete --name "$name" --force 2>&1)
+					pid=$(pidof headscale)
+					if [ -z "$pid" ]; then
+						echo '{"code": 1, "message": "Headscale service is stopped. Please start the service first."}'
+					else
+						out=$(run_headscale users destroy --name "$name" --force 2>&1)
 						rc=$?
+						if [ "$rc" -ne 0 ]; then
+							out=$(run_headscale users delete --name "$name" --force 2>&1)
+							rc=$?
+						fi
+						if [ "$rc" -ne 0 ]; then
+							out=$(run_headscale users destroy "$name" --force 2>&1)
+							rc=$?
+						fi
+						json_init
+						json_add_int code "$rc"
+						json_add_string message "$out"
+						json_dump
+						json_cleanup
 					fi
-					if [ "$rc" -ne 0 ]; then
-						out=$(run_headscale users destroy "$name" --force 2>&1)
-						rc=$?
-					fi
-					json_init
-					json_add_int code "$rc"
-					json_add_string message "$out"
-					json_dump
-					json_cleanup
 				else
 					echo '{"code": 1, "message": "Missing username"}'
 				fi

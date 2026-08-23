@@ -78,7 +78,7 @@ return view.extend({
 				E('th', { 'class': 'th center', 'style': 'width:60px;' }, [ _('ID') ]),
 				E('th', { 'class': 'th', 'style': 'width:28%;' }, [ _('Source Devices (Who)') ]),
 				E('th', { 'class': 'th', 'style': 'width:36%;' }, [ _('Target & Ports (What)') ]),
-				E('th', { 'class': 'th center', 'style': 'width:120px;' }, [ _('Action') ]),
+				E('th', { 'class': 'th center', 'style': 'width:120px;' }, [ _('Policy') || '策略' ]),
 				E('th', { 'class': 'th center nowrap cbi-section-actions', 'style': 'width:100px;' }, [ _('Actions') ])
 			])
 		]);
@@ -211,7 +211,7 @@ return view.extend({
 			portCustomInput.style.display = (portSelect.value === 'custom') ? 'inline-block' : 'none';
 		});
 
-		var addSection = E('div', { 'class': 'cbi-section' }, [
+		var addSection = E('div', { 'class': 'cbi-section', 'style': 'margin-bottom:36px;' }, [
 			E('h3', {}, [ _('Add New Access Rule') ]),
 			E('div', { 'class': 'cbi-section-node' }, [
 				E('div', { 'class': 'table' }, [
@@ -228,7 +228,7 @@ return view.extend({
 						E('div', { 'class': 'td left' }, [ portSelect, portCustomInput ])
 					])
 				]),
-				E('div', { 'style': 'margin-top:12px;' }, [
+				E('div', { 'style': 'margin-top:14px;margin-bottom:20px;' }, [
 					E('button', {
 						'class': 'btn cbi-button cbi-button-action',
 						'click': function() {
@@ -253,47 +253,8 @@ return view.extend({
 			])
 		]);
 
-		// ------------------- Section 3: Global Quick Presets -------------------
-		var hasSSH = self.currentPolicyObj.ssh && self.currentPolicyObj.ssh.length > 0;
-		var optionsSection = E('div', { 'class': 'cbi-section' }, [
-			E('h3', {}, [ _('Quick Options & Presets') ]),
-			E('div', { 'class': 'cbi-section-node' }, [
-				E('div', { 'style': 'display:flex;gap:12px;align-items:center;flex-wrap:wrap;' }, [
-					E('button', {
-						'class': 'btn cbi-button cbi-button-neutral',
-						'click': function() {
-							self.currentPolicyObj = JSON.parse(JSON.stringify(DEFAULT_ACL_OBJ));
-							self.markUciChanged();
-							self.renderRulesTable();
-						}
-					}, [ _('Reset to Default (Allow All)') ]),
-
-					E('button', {
-						'class': hasSSH ? 'btn cbi-button cbi-button-reset' : 'btn cbi-button cbi-button-action',
-						'click': function() {
-							if (self.currentPolicyObj.ssh) {
-								delete self.currentPolicyObj.ssh;
-							} else {
-								self.currentPolicyObj.ssh = [
-									{
-										"action": "accept",
-										"src": ["autogroup:member"],
-										"dst": ["autogroup:self"],
-										"users": ["autogroup:nonroot", "root"]
-									}
-								];
-							}
-							self.markUciChanged();
-							self.renderRulesTable();
-						}
-					}, [ hasSSH ? _('Disable Tailscale SSH') : _('Enable Tailscale SSH') ])
-				])
-			])
-		]);
-
 		viewRoot.appendChild(tableSection);
 		viewRoot.appendChild(addSection);
-		viewRoot.appendChild(optionsSection);
 
 		return viewRoot;
 	},
