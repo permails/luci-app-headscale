@@ -13,7 +13,7 @@
 var callSetFirewall = rpc.declare({
 	object: 'luci.headscale',
 	method: 'set_firewall',
-	params: [ 'enabled' ],
+	params: [ 'enabled', 'port', 'stun_port' ],
 	expect: { code: 0 }
 });
 
@@ -56,7 +56,11 @@ return view.extend({
 		o.default = '0';
 		o.write = function(section_id, formvalue) {
 			uci.set('headscale', section_id, 'open_firewall', formvalue);
-			return callSetFirewall(formvalue === '1');
+			var listenAddr = this.section.formvalue(section_id, 'listen_addr') || uci.get('headscale', section_id, 'listen_addr') || '0.0.0.0:8080';
+			var listenPort = (listenAddr.indexOf(':') !== -1) ? listenAddr.split(':').pop() : '8080';
+			var stunAddr = uci.get('headscale', 'derp', 'stun_listen_addr') || '0.0.0.0:3478';
+			var stunPort = (stunAddr.indexOf(':') !== -1) ? stunAddr.split(':').pop() : '3478';
+			return callSetFirewall(formvalue === '1', listenPort, stunPort);
 		};
 
 		o = s.taboption('general', form.Value, 'server_url', _('Server URL'),

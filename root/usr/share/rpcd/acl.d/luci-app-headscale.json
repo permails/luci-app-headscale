@@ -21,7 +21,10 @@
 			},
 			"file": {
 				"/etc/headscale/acl.hujson": [ "write" ],
-				"/etc/init.d/firewall reload": [ "exec" ]
+				"/etc/init.d/firewall reload": [ "exec" ],
+				"/etc/init.d/firewall restart": [ "exec" ],
+				"/sbin/fw4 reload": [ "exec" ],
+				"/sbin/fw3 reload": [ "exec" ]
 			}
 		}
 	}

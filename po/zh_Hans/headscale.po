@@ -1426,3 +1426,95 @@ msgstr "iOS (iPhone / iPad)"
 msgid "nodes"
 msgstr "台设备"
 
+msgid "PORT MISMATCH"
+msgstr "端口不一致"
+
+msgid "BLOCKED / CLOSED"
+msgstr "未开放 / 已拦截"
+
+msgid "Live kernel firewall active"
+msgstr "内核防火墙规则已生效"
+
+msgid "Port %s/tcp open on WAN"
+msgstr "WAN 口 TCP %s 端口已放行"
+
+msgid "External WAN access completely blocked"
+msgstr "外网访问已完全阻断"
+
+msgid "Click to toggle WAN firewall rules"
+msgstr "点击配置 WAN 口防火墙规则"
+
+msgid "Manage"
+msgstr "管理"
+
+msgid "Enable"
+msgstr "开启"
+
+msgid "You are about to deploy the following WAN firewall rules to allow external connections:"
+msgstr "即将向系统防火墙下发以下放行规则以允许外网连接："
+
+msgid "WAN Zone ➔ Router Local (Port %s) ➔ ACCEPT"
+msgstr "WAN 区域 ➔ 路由器本机 (TCP %s 端口) ➔ 放行 (ACCEPT)"
+
+msgid "WAN Zone ➔ STUN Relay (Port %s) ➔ ACCEPT"
+msgstr "WAN 区域 ➔ STUN 中继 (UDP %s 端口) ➔ 放行 (ACCEPT)"
+
+msgid "Once deployed and reloaded, external Tailscale clients can connect directly using your WAN IP or DDNS domain."
+msgstr "规则下发并重载后，外网 Tailscale 客户端可通过公网 IP 或 DDNS 域名直接连接自建服务器。"
+
+msgid "You are about to remove Headscale WAN firewall rules:"
+msgstr "即将从系统防火墙中移除 Headscale 放行规则："
+
+msgid "WAN port rules (%s/tcp%s) will be deleted and the firewall reloaded. Only local LAN devices will be able to connect."
+msgstr "WAN 口放行规则 (%s/tcp%s) 将被删除并重载防火墙，届时仅局域网 (LAN) 内设备可连接。"
+
+msgid "External access will be immediately blocked."
+msgstr "外网连接将被立即阻断。"
+
+msgid "Deploy & Reload Firewall"
+msgstr "立即下发并重载防火墙"
+
+msgid "Remove & Close Port"
+msgstr "立即移除并关闭端口"
+
+msgid "Firewall rules applied! Port %s/tcp is now accessible from WAN."
+msgstr "防火墙规则下发成功！WAN 口 TCP %s 端口现已允许外网访问。"
+
+msgid "Firewall rules removed. External access is completely blocked."
+msgstr "防火墙规则已移除，外网访问已完全阻断。"
+
+msgid "Failed to update firewall: "
+msgstr "更新防火墙规则失败："
+
+msgid "Re-apply and synchronize firewall rules with current settings"
+msgstr "重新向防火墙下发并同步当前端口设置"
+
+msgid "Sync & Reload"
+msgstr "同步并重载"
+
+msgid "Open WAN Firewall Port"
+msgstr "开启 WAN 口防火墙端口"
+
+msgid "Close WAN Firewall Port"
+msgstr "关闭 WAN 口防火墙端口"
+
+msgid "PID: "
+msgstr "进程 PID: "
+
+msgid "PID:"
+msgstr "进程 PID:"
+
+msgid "Service is stopped"
+msgstr "服务已停止"
+
+msgid "Service is disabled"
+msgstr "服务未启用"
+
+msgid "Failed to update firewall:"
+msgstr "更新防火墙规则失败："
+
+msgid "Failed to update firewall: "
+msgstr "更新防火墙规则失败："
+
+
+

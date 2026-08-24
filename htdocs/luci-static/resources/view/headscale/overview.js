@@ -32,13 +32,13 @@ var callListUsers = rpc.declare({
 var callGetFirewallStatus = rpc.declare({
 	object: 'luci.headscale',
 	method: 'get_firewall_status',
-	expect: { opened: false, port: '8080' }
+	expect: { }
 });
 
 var callSetFirewall = rpc.declare({
 	object: 'luci.headscale',
 	method: 'set_firewall',
-	params: [ 'enabled' ],
+	params: [ 'enabled', 'port', 'stun_port' ],
 	expect: { code: 0 }
 });
 
@@ -48,6 +48,37 @@ var callServiceAction = rpc.declare({
 	params: [ 'action' ],
 	expect: { code: 0 }
 });
+
+function renderFwBadge(fwStatus) {
+	if (fwStatus && (fwStatus.opened === true || fwStatus.opened === 1)) {
+		if (fwStatus.synced === false) {
+			return E('span', { 'class': 'badge label warning', 'style': 'font-size:12px;padding:3px 8px;' }, [
+				'▲ ' + (fwStatus.dest_port || '') + ' ≠ ' + (fwStatus.port || '')
+			]);
+		}
+		var labelText = _('OPENED') + ' (' + (fwStatus.port || '8080') + '/tcp' + (fwStatus.stun_opened ? (' + STUN ' + (fwStatus.stun_port || '3478') + '/udp') : '') + ')';
+		return E('span', { 'class': 'badge label success', 'style': 'font-size:12px;padding:3px 8px;' }, [ labelText ]);
+	}
+	return E('span', { 'class': 'badge label', 'style': 'font-size:12px;padding:3px 8px;' }, [
+		_('BLOCKED')
+	]);
+}
+
+function renderFwDesc(fwStatus) {
+	if (fwStatus && (fwStatus.opened === true || fwStatus.opened === 1)) {
+		if (fwStatus.live_active) {
+			return E('span', { 'style': 'color:#16a34a;font-size:12px;display:flex;align-items:center;gap:4px;' }, [
+				'✓ ' + _('Live kernel firewall active')
+			]);
+		}
+		return E('span', { 'style': 'color:#475569;font-size:12px;' }, [
+			_('Port: ') + (fwStatus.port || '8080') + '/tcp'
+		]);
+	}
+	return E('span', { 'style': 'color:#a0aec0;font-size:12px;' }, [
+		_('External access blocked')
+	]);
+}
 
 return view.extend({
 	load: function() {
@@ -72,6 +103,8 @@ return view.extend({
 		var listenAddr = uci.get('headscale', 'server', 'listen_addr') || '0.0.0.0:8080';
 		var baseDomain = uci.get('headscale', 'dns', 'base_domain') || 'example.com';
 		var derpEnabled = uci.get('headscale', 'derp', 'embedded_enabled') === '1';
+		var stunAddr = uci.get('headscale', 'derp', 'stun_listen_addr') || '0.0.0.0:3478';
+		var stunPort = (stunAddr.indexOf(':') !== -1) ? stunAddr.split(':').pop() : '3478';
 		var enabled = (status.enabled !== undefined) ? status.enabled : (uci.get('headscale', 'server', 'enabled') === '1');
 
 		var rawLanIp = status.lan_ip || window.location.hostname || '192.168.1.1';
@@ -98,6 +131,79 @@ return view.extend({
 			if (n.online !== false) onlineNodesCount++;
 		});
 
+		function triggerFirewallToggle(targetState) {
+			var port = listenPort || fwStatus.port || '8080';
+			var sPort = stunPort || fwStatus.stun_port || '3478';
+			var isDerp = derpEnabled || fwStatus.derp_enabled;
+
+			var modalBody = [];
+			if (targetState) {
+				modalBody = [
+					E('p', { 'style': 'font-size:14px;color:#2d3748;margin-bottom:12px;line-height:1.5;' }, [
+						_('You are about to deploy the following WAN firewall rules to allow external connections:')
+					]),
+					E('div', { 'style': 'background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px;margin-bottom:14px;' }, [
+						E('div', { 'style': 'margin-bottom:8px;font-family:monospace;font-size:13px;display:flex;align-items:center;gap:8px;' }, [
+							E('span', { 'class': 'badge label success', 'style': 'font-size:11px;' }, [ 'TCP' ]),
+							E('strong', {}, [ 'Allow-Headscale:' ]),
+							E('span', { 'style': 'color:#4a5568;' }, [ _('WAN Zone ➔ Router Local (Port %s) ➔ ACCEPT').format(port) ])
+						]),
+						isDerp ? E('div', { 'style': 'font-family:monospace;font-size:13px;display:flex;align-items:center;gap:8px;' }, [
+							E('span', { 'class': 'badge label', 'style': 'background:#3b82f6;color:#fff;font-size:11px;' }, [ 'UDP' ]),
+							E('strong', {}, [ 'Allow-Headscale-STUN:' ]),
+							E('span', { 'style': 'color:#4a5568;' }, [ _('WAN Zone ➔ STUN Relay (Port %s) ➔ ACCEPT').format(sPort) ])
+						]) : ''
+					]),
+					E('p', { 'style': 'font-size:12px;color:#718096;margin:0;' }, [
+						_('Once deployed and reloaded, external Tailscale clients can connect directly using your WAN IP or DDNS domain.')
+					])
+				];
+			} else {
+				modalBody = [
+					E('p', { 'style': 'font-size:14px;color:#2d3748;margin-bottom:12px;line-height:1.5;' }, [
+						_('You are about to remove Headscale WAN firewall rules:')
+					]),
+					E('div', { 'style': 'background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:12px;margin-bottom:14px;color:#991b1b;font-size:13px;' }, [
+						_('WAN port rules (%s/tcp%s) will be deleted and the firewall reloaded. Only local LAN devices will be able to connect.').format(port, isDerp ? (' + ' + sPort + '/udp') : '')
+					]),
+					E('p', { 'style': 'font-size:12px;color:#718096;margin:0;' }, [
+						_('External access will be immediately blocked.')
+					])
+				];
+			}
+
+			ui.showModal(targetState ? _('Open WAN Firewall Port') : _('Close WAN Firewall Port'), [
+				E('div', {}, modalBody),
+				E('div', { 'class': 'right', 'style': 'margin-top:18px;display:flex;justify-content:flex-end;gap:10px;' }, [
+					E('button', {
+						'class': 'btn cbi-button cbi-button-neutral',
+						'click': ui.hideModal
+					}, [ _('Cancel') ]),
+					E('button', {
+						'class': targetState ? 'btn cbi-button cbi-button-positive' : 'btn cbi-button cbi-button-reset',
+						'click': function() {
+							ui.showModal(_('Updating Firewall'), [
+								E('p', { 'class': 'spinning' }, [ _('Configuring firewall rules and reloading...') ])
+							]);
+							return callSetFirewall(targetState, port, sPort).then(function(res) {
+								ui.hideModal();
+								var msg = (res && res.message) ? res.message : (targetState ?
+									_('Firewall rules applied! Port %s/tcp is now accessible from WAN.').format(port) :
+									_('Firewall rules removed. External access is completely blocked.'));
+								ui.addNotification(null, E('p', {}, [ msg ]), 'info');
+								setTimeout(function() {
+									location.reload();
+								}, 600);
+							}).catch(function(err) {
+								ui.hideModal();
+								ui.addNotification(null, E('p', {}, [ _('Failed to update firewall: ') + (err.message || err) ]), 'error');
+							});
+						}
+					}, [ targetState ? _('Deploy & Reload Firewall') : _('Remove & Close Port') ])
+				])
+			]);
+		}
+
 		var viewRoot = E('div', { 'class': 'cbi-map' }, [
 			E('h2', {}, [ _('Headscale - Control Server') ]),
 			E('div', { 'class': 'cbi-map-descr' }, [
@@ -115,8 +221,8 @@ return view.extend({
 						E('span', { 'class': 'badge label success', 'style': 'font-size:13px;padding:4px 8px;' }, [ _('RUNNING') ]) :
 						E('span', { 'class': 'badge label fatal', 'style': 'font-size:13px;padding:4px 8px;' }, [ enabled ? _('STOPPED') : _('DISABLED') ])
 				]),
-				E('div', { 'style': 'font-size:12px;color:#a0aec0;' }, [
-					status.running ? ('PID: ' + status.pid) : _('Service Inactive')
+				E('div', { 'style': 'font-size:12px;color:#718096;' }, [
+					status.running ? (_('PID: ') + status.pid) : (enabled ? _('Service is stopped') : _('Service is disabled'))
 				])
 			]),
 
@@ -139,15 +245,20 @@ return view.extend({
 			]),
 
 			// Card 4: WAN Firewall
-			E('div', { 'style': 'background:#fdfdfe;border:1px solid #e2e8f0;border-radius:6px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.04);' }, [
-				E('div', { 'style': 'font-size:12px;color:#718096;margin-bottom:6px;font-weight:bold;' }, [ _('WAN Firewall') ]),
-				E('div', { 'id': 'hs_stat_fw', 'style': 'margin-bottom:4px;' }, [
-					fwStatus.opened ?
-						E('span', { 'class': 'badge label success', 'style': 'font-size:13px;padding:4px 8px;' }, [ _('OPENED') ]) :
-						E('span', { 'class': 'badge label', 'style': 'font-size:13px;padding:4px 8px;' }, [ _('BLOCKED') ])
+			E('div', {
+				'style': 'background:#fdfdfe;border:1px solid #e2e8f0;border-radius:6px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.04);cursor:pointer;',
+				'title': _('Click to toggle WAN firewall rules'),
+				'click': function() { triggerFirewallToggle(!fwStatus.opened); }
+			}, [
+				E('div', { 'style': 'display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;' }, [
+					E('span', { 'style': 'font-size:12px;color:#718096;font-weight:bold;' }, [ _('WAN Firewall') ]),
+					E('span', { 'style': 'font-size:11px;color:#3b82f6;text-decoration:underline;' }, [ fwStatus.opened ? _('Manage') : _('Enable') ])
 				]),
-				E('div', { 'style': 'font-size:12px;color:#a0aec0;' }, [
-					fwStatus.opened ? (_('Port: ') + fwStatus.port + '/tcp') : _('External access blocked')
+				E('div', { 'id': 'hs_stat_fw', 'style': 'margin-bottom:4px;' }, [
+					renderFwBadge(fwStatus)
+				]),
+				E('div', { 'id': 'hs_stat_fw_desc' }, [
+					renderFwDesc(fwStatus)
 				])
 			])
 		]);
@@ -217,32 +328,29 @@ return view.extend({
 					E('tr', { 'class': 'tr' }, [
 						E('td', { 'class': 'td', 'style': 'width:220px;vertical-align:middle;padding:10px 12px;font-weight:500;color:#4a5568;' }, [ _('WAN Firewall Port') ]),
 						E('td', { 'class': 'td', 'style': 'vertical-align:middle;padding:10px 12px;' }, [
-							E('div', { 'style': 'display:flex;align-items:center;gap:10px;' }, [
+							E('div', { 'style': 'display:flex;align-items:center;flex-wrap:wrap;gap:10px;' }, [
 								E('span', { 'id': 'hs_detail_fw' }, [
-									fwStatus.opened ?
-										E('span', { 'class': 'badge label success', 'style': 'padding:3px 8px;font-size:12px;' }, [ _('OPENED') + ' (' + fwStatus.port + '/tcp)' ]) :
-										E('span', { 'class': 'badge label', 'style': 'padding:3px 8px;font-size:12px;' }, [ _('CLOSED / BLOCKED') ])
+									renderFwBadge(fwStatus)
 								]),
 								E('button', {
 									'class': fwStatus.opened ? 'btn cbi-button cbi-button-reset' : 'btn cbi-button cbi-button-positive',
 									'style': 'padding:2px 10px;font-size:12px;',
 									'click': function() {
-										var targetState = !fwStatus.opened;
-										var msg = targetState ?
-											_('Open WAN firewall port (%s/tcp) to allow external connections?').format(fwStatus.port || '8080') :
-											_('Close WAN firewall port for Headscale?');
-										if (confirm(msg)) {
-											ui.showModal(_('Updating Firewall'), [
-												E('p', { 'class': 'spinning' }, [ _('Configuring firewall rules and reloading...') ])
-											]);
-											return callSetFirewall(targetState).then(function() {
-												location.reload();
-											});
-										}
+										triggerFirewallToggle(!fwStatus.opened);
 									}
 								}, [ fwStatus.opened ? _('Close Firewall Port') : _('Open Firewall Port') ]),
-								E('span', { 'style': 'color:#888;font-size:12px;' }, [
-									fwStatus.opened ? _('External Tailscale clients can connect directly via WAN IP.') : _('Only devices on local LAN can connect currently.')
+								(fwStatus.opened && (fwStatus.synced === false || !fwStatus.live_active)) ? E('button', {
+									'class': 'btn cbi-button cbi-button-action',
+									'style': 'padding:2px 10px;font-size:12px;',
+									'title': _('Re-apply and synchronize firewall rules with current settings'),
+									'click': function() {
+										triggerFirewallToggle(true);
+									}
+								}, [ _('Sync & Reload') ]) : '',
+								E('span', { 'style': 'color:#718096;font-size:12px;' }, [
+									fwStatus.opened ?
+										_('External Tailscale clients can connect directly via WAN IP.') :
+										_('Only devices on local LAN can connect currently.')
 								])
 							])
 						])
@@ -329,8 +437,15 @@ return view.extend({
 		viewRoot.appendChild(detailSection);
 
 		// Lightweight Polling (10s interval)
+		// Lightweight Polling (10s interval)
 		poll.add(function() {
-			return callGetStatus().then(function(res) {
+			return Promise.all([
+				callGetStatus(),
+				callGetFirewallStatus()
+			]).then(function(results) {
+				var res = results[0];
+				var fwRes = results[1];
+
 				var statBadge = document.getElementById('hs_stat_status');
 				var detailBadge = document.getElementById('hs_detail_status');
 				if (res) {
@@ -343,6 +458,26 @@ return view.extend({
 						detailBadge.innerHTML = res.running ?
 							'<span class="badge label success" style="padding:3px 8px;font-size:12px;">' + _('RUNNING') + ' (PID: ' + res.pid + ')</span>' :
 							'<span class="badge label fatal" style="padding:3px 8px;font-size:12px;">' + (enabled ? _('STOPPED') : _('DISABLED')) + '</span>';
+					}
+				}
+
+				if (fwRes) {
+					fwStatus = fwRes;
+					var statFwBadge = document.getElementById('hs_stat_fw');
+					var statFwDesc = document.getElementById('hs_stat_fw_desc');
+					var detailFwBadge = document.getElementById('hs_detail_fw');
+
+					if (statFwBadge) {
+						statFwBadge.innerHTML = '';
+						statFwBadge.appendChild(renderFwBadge(fwRes));
+					}
+					if (statFwDesc) {
+						statFwDesc.innerHTML = '';
+						statFwDesc.appendChild(renderFwDesc(fwRes));
+					}
+					if (detailFwBadge) {
+						detailFwBadge.innerHTML = '';
+						detailFwBadge.appendChild(renderFwBadge(fwRes));
 					}
 				}
 			});

@@ -30,19 +30,6 @@ var callDeleteUser = rpc.declare({
 	expect: { code: 0 }
 });
 
-var callGetStatus = rpc.declare({
-	object: 'luci.headscale',
-	method: 'get_status',
-	expect: { }
-});
-
-var callServiceAction = rpc.declare({
-	object: 'luci.headscale',
-	method: 'service_action',
-	params: [ 'action' ],
-	expect: { code: 0 }
-});
-
 function formatDateTime(t) {
 	if (!t) return '-';
 	var d = null;
@@ -69,8 +56,7 @@ return view.extend({
 	load: function() {
 		return Promise.all([
 			callListUsers(),
-			uci.load('headscale'),
-			callGetStatus()
+			uci.load('headscale')
 		]);
 	},
 
@@ -199,32 +185,11 @@ return view.extend({
 
 		self.renderTableRows();
 
-		var warningBanner = !status.running ? E('div', { 'class': 'alert-message warning', 'style': 'margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;' }, [
-			E('div', {}, [
-				E('strong', {}, [ _('Headscale service is currently stopped.') ]),
-				E('div', { 'style': 'font-size:12px;margin-top:2px;color:#718096;' }, [
-					_('Headscale daemon must be running in order to create users, generate pre-auth keys, or manage nodes.')
-				])
-			]),
-			E('button', {
-				'class': 'btn cbi-button cbi-button-action',
-				'click': function() {
-					ui.showModal(_('Starting Service'), [
-						E('p', { 'class': 'spinning' }, [ _('Enabling and starting Headscale service...') ])
-					]);
-					return callServiceAction('start').then(function() {
-						location.reload();
-					});
-				}
-			}, [ _('Start Service') ])
-		]) : '';
-
 		return E('div', { 'class': 'cbi-map' }, [
 			E('h2', {}, [ _('Headscale - Users') ]),
 			E('div', { 'class': 'cbi-map-descr' }, [
 				_('Manage Headscale users (namespaces) for segmenting registered nodes and generating authentication keys.')
 			]),
-			warningBanner,
 			E('div', { 'class': 'cbi-section' }, [
 				E('h3', {}, [ _('Create New User') ]),
 				E('div', { 'class': 'cbi-section-node' }, [

@@ -1425,3 +1425,87 @@ msgstr ""
 msgid "nodes"
 msgstr ""
 
+msgid "PORT MISMATCH"
+msgstr ""
+
+msgid "BLOCKED / CLOSED"
+msgstr ""
+
+msgid "Live kernel firewall active"
+msgstr ""
+
+msgid "Port %s/tcp open on WAN"
+msgstr ""
+
+msgid "External WAN access completely blocked"
+msgstr ""
+
+msgid "Click to toggle WAN firewall rules"
+msgstr ""
+
+msgid "Manage"
+msgstr ""
+
+msgid "Enable"
+msgstr ""
+
+msgid "You are about to deploy the following WAN firewall rules to allow external connections:"
+msgstr ""
+
+msgid "WAN Zone ➔ Router Local (Port %s) ➔ ACCEPT"
+msgstr ""
+
+msgid "WAN Zone ➔ STUN Relay (Port %s) ➔ ACCEPT"
+msgstr ""
+
+msgid "Once deployed and reloaded, external Tailscale clients can connect directly using your WAN IP or DDNS domain."
+msgstr ""
+
+msgid "You are about to remove Headscale WAN firewall rules:"
+msgstr ""
+
+msgid "WAN port rules (%s/tcp%s) will be deleted and the firewall reloaded. Only local LAN devices will be able to connect."
+msgstr ""
+
+msgid "External access will be immediately blocked."
+msgstr ""
+
+msgid "Deploy & Reload Firewall"
+msgstr ""
+
+msgid "Remove & Close Port"
+msgstr ""
+
+msgid "Firewall rules applied! Port %s/tcp is now accessible from WAN."
+msgstr ""
+
+msgid "Firewall rules removed. External access is completely blocked."
+msgstr ""
+
+msgid "Failed to update firewall: "
+msgstr ""
+
+msgid "Re-apply and synchronize firewall rules with current settings"
+msgstr ""
+
+msgid "Sync & Reload"
+msgstr ""
+
+msgid "Open WAN Firewall Port"
+msgstr ""
+
+msgid "Close WAN Firewall Port"
+msgstr ""
+
+msgid "PID: "
+msgstr ""
+
+msgid "Service is stopped"
+msgstr ""
+
+msgid "Service is disabled"
+msgstr ""
+
+
+
+

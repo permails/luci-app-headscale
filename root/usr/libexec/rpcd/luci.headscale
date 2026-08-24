@@ -42,7 +42,7 @@ case "$1" in
 			"get_log": { "lines": 0 },
 			"clean_log": {},
 			"get_firewall_status": {},
-			"set_firewall": { "enabled": false },
+			"set_firewall": { "enabled": false, "port": "", "stun_port": "" },
 			"service_action": { "action": "" },
 			"detect_certs": {}
 		}'
@@ -527,17 +527,96 @@ case "$1" in
 				port=$(echo "$listen_addr" | awk -F: '{print $NF}')
 				[ -z "$port" ] && port="8080"
 
-				fw_enabled=$(uci -q get firewall.headscale.enabled)
+				derp_enabled=$(uci -q get headscale.derp.embedded_enabled)
+				[ -z "$derp_enabled" ] && derp_enabled="0"
+				stun_addr=$(uci -q get headscale.derp.stun_listen_addr)
+				stun_port="3478"
+				[ -n "$stun_addr" ] && stun_port=$(echo "$stun_addr" | awk -F: '{print $NF}')
+
+				open_cfg=$(uci -q get headscale.server.open_firewall)
+
+				# 1. Check UCI rule for Headscale TCP port
 				fw_dest_port=$(uci -q get firewall.headscale.dest_port)
+				fw_enabled=$(uci -q get firewall.headscale.enabled)
+				fw_rule_found=0
+				if [ -n "$fw_dest_port" ]; then
+					# If enabled option is omitted in UCI, it defaults to 1
+					[ -z "$fw_enabled" ] && fw_enabled="1"
+					[ "$fw_enabled" = "1" ] && fw_rule_found=1
+				else
+					# Search named or anonymous Allow-Headscale rule
+					for s in $(uci show firewall 2>/dev/null | grep -E "\.name='?Allow-Headscale'?" | cut -d. -f2 | sort -u); do
+						p=$(uci -q get "firewall.$s.dest_port")
+						e=$(uci -q get "firewall.$s.enabled")
+						[ -z "$e" ] && e="1"
+						if [ -n "$p" ] && [ "$e" = "1" ]; then
+							fw_dest_port="$p"
+							fw_rule_found=1
+							break
+						fi
+					done
+				fi
+
+				# 2. Check UCI rule for STUN UDP port
+				stun_rule_found=0
+				stun_fw_dest_port=$(uci -q get firewall.headscale_stun.dest_port)
+				stun_fw_enabled=$(uci -q get firewall.headscale_stun.enabled)
+				if [ -n "$stun_fw_dest_port" ]; then
+					[ -z "$stun_fw_enabled" ] && stun_fw_enabled="1"
+					[ "$stun_fw_enabled" = "1" ] && stun_rule_found=1
+				else
+					for s in $(uci show firewall 2>/dev/null | grep -E "\.name='?Allow-Headscale-STUN'?" | cut -d. -f2 | sort -u); do
+						p=$(uci -q get "firewall.$s.dest_port")
+						e=$(uci -q get "firewall.$s.enabled")
+						[ -z "$e" ] && e="1"
+						if [ -n "$p" ] && [ "$e" = "1" ]; then
+							stun_fw_dest_port="$p"
+							stun_rule_found=1
+							break
+						fi
+					done
+				fi
+
+				# 3. Live Packet Filter Verification (fw4 nftables / fw3 iptables)
+				live_active=0
+				live_type="none"
+				if command -v nft >/dev/null 2>&1; then
+					live_type="fw4 (nftables)"
+					if nft list chain inet fw4 input_wan 2>/dev/null | grep -qE "(dport $port|Allow-Headscale)"; then
+						live_active=1
+					elif nft list ruleset 2>/dev/null | grep -qE "(Allow-Headscale|dport $port.*accept)"; then
+						live_active=1
+					fi
+				elif command -v iptables >/dev/null 2>&1; then
+					live_type="fw3 (iptables)"
+					if iptables -nL zone_wan_input 2>/dev/null | grep -q "$port" || iptables -nL input_wan_rule 2>/dev/null | grep -q "$port"; then
+						live_active=1
+					fi
+				fi
+
+				# Determine overall opened state
 				opened=0
-				if [ "$fw_enabled" = "1" ] && [ -n "$fw_dest_port" ]; then
+				if [ "$fw_rule_found" = "1" ] || [ "$open_cfg" = "1" ] || [ "$live_active" = "1" ]; then
 					opened=1
+				fi
+
+				synced=1
+				if [ "$opened" = "1" ]; then
+					if [ -n "$fw_dest_port" ] && [ "$fw_dest_port" != "$port" ]; then
+						synced=0
+					fi
 				fi
 
 				json_init
 				json_add_boolean opened "$opened"
 				json_add_string port "$port"
 				json_add_string dest_port "$fw_dest_port"
+				json_add_boolean derp_enabled "$([ "$derp_enabled" = "1" ] && echo 1 || echo 0)"
+				json_add_string stun_port "$stun_port"
+				json_add_boolean stun_opened "$stun_rule_found"
+				json_add_boolean live_active "$live_active"
+				json_add_string live_type "$live_type"
+				json_add_boolean synced "$synced"
 				json_dump
 				json_cleanup
 			;;
@@ -546,19 +625,32 @@ case "$1" in
 				read -r input
 				json_load "$input"
 				json_get_var enable enabled
+				json_get_var custom_port port
+				json_get_var custom_stun_port stun_port
 
 				listen_addr=$(uci -q get headscale.server.listen_addr)
 				[ -z "$listen_addr" ] && listen_addr="0.0.0.0:8080"
 				port=$(echo "$listen_addr" | awk -F: '{print $NF}')
 				[ -z "$port" ] && port="8080"
+				[ -n "$custom_port" ] && port="$custom_port"
 
 				derp_enabled=$(uci -q get headscale.derp.embedded_enabled)
+				[ -z "$derp_enabled" ] && derp_enabled="0"
 				stun_addr=$(uci -q get headscale.derp.stun_listen_addr)
 				stun_port="3478"
 				[ -n "$stun_addr" ] && stun_port=$(echo "$stun_addr" | awk -F: '{print $NF}')
+				[ -n "$custom_stun_port" ] && stun_port="$custom_stun_port"
+
+				clean_headscale_fw_rules() {
+					uci -q delete firewall.headscale
+					uci -q delete firewall.headscale_stun
+					for s in $(uci show firewall 2>/dev/null | grep -E "\.name='?Allow-Headscale(-STUN)?'?" | cut -d. -f2 | sort -u); do
+						uci -q delete "firewall.$s"
+					done
+				}
 
 				if [ "$enable" = "1" ] || [ "$enable" = "true" ]; then
-					uci -q delete firewall.headscale
+					clean_headscale_fw_rules
 					uci set firewall.headscale=rule
 					uci set firewall.headscale.name='Allow-Headscale'
 					uci set firewall.headscale.src='wan'
@@ -566,8 +658,8 @@ case "$1" in
 					uci set firewall.headscale.dest_port="$port"
 					uci set firewall.headscale.target='ACCEPT'
 					uci set firewall.headscale.enabled='1'
+
 					if [ "$derp_enabled" = "1" ]; then
-						uci -q delete firewall.headscale_stun
 						uci set firewall.headscale_stun=rule
 						uci set firewall.headscale_stun.name='Allow-Headscale-STUN'
 						uci set firewall.headscale_stun.src='wan'
@@ -576,19 +668,38 @@ case "$1" in
 						uci set firewall.headscale_stun.target='ACCEPT'
 						uci set firewall.headscale_stun.enabled='1'
 					fi
+
 					uci commit firewall
 					uci -q set headscale.server.open_firewall='1'
 					uci commit headscale
-					/etc/init.d/firewall reload >/dev/null 2>&1
-					out="Firewall port $port opened"
+
+					if [ -x "/etc/init.d/firewall" ]; then
+						/etc/init.d/firewall reload >/dev/null 2>&1 || /etc/init.d/firewall restart >/dev/null 2>&1
+					elif [ -x "/sbin/fw4" ]; then
+						/sbin/fw4 reload >/dev/null 2>&1
+					elif [ -x "/sbin/fw3" ]; then
+						/sbin/fw3 reload >/dev/null 2>&1
+					fi
+
+					if [ "$derp_enabled" = "1" ]; then
+						out="Firewall rules successfully applied: WAN TCP $port and UDP $stun_port (STUN) are open"
+					else
+						out="Firewall rule successfully applied: WAN TCP $port is open"
+					fi
 				else
-					uci -q delete firewall.headscale
-					uci -q delete firewall.headscale_stun
+					clean_headscale_fw_rules
 					uci commit firewall
 					uci -q set headscale.server.open_firewall='0'
 					uci commit headscale
-					/etc/init.d/firewall reload >/dev/null 2>&1
-					out="Firewall rules closed"
+
+					if [ -x "/etc/init.d/firewall" ]; then
+						/etc/init.d/firewall reload >/dev/null 2>&1 || /etc/init.d/firewall restart >/dev/null 2>&1
+					elif [ -x "/sbin/fw4" ]; then
+						/sbin/fw4 reload >/dev/null 2>&1
+					elif [ -x "/sbin/fw3" ]; then
+						/sbin/fw3 reload >/dev/null 2>&1
+					fi
+					out="Firewall rules removed: External access is completely blocked"
 				fi
 
 				json_init
