@@ -66,7 +66,7 @@ OpenWrt LuCI modern management application for the [Headscale](https://github.co
   * IP allocation prefix definitions for dual-stack operation.
   * DNS & MagicDNS configuration, base domain naming, and custom upstream nameservers.
   * Ephemeral node expiration timeouts and gRPC listen interfaces.
-* Automatic generation of compliant `/etc/headscale/config.yaml` from UCI parameters via `/etc/init.d/headscale`.
+* Automatic generation of compliant `/etc/headscale/config.yaml` from UCI parameters via `/etc/init.d/headscale` (owned by the companion [`openwrt-headscale`](https://github.com/permails/openwrt-headscale) daemon package, which also provides the persistent daemon log and staging-option cleanup in its procd `reload_service`).
 
 ### 4. Machine & Node Management
 * Tabular node monitoring with real-time connectivity status (online/offline indicators based on last-seen timestamps).

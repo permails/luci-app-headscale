@@ -12,7 +12,7 @@ LUCI_PKGARCH:=all
 
 PKG_NAME:=luci-app-headscale
 PKG_VERSION:=1.26.8
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_LICENSE:=Apache-2.0
 PKG_AUTHOR:=permails <logo@permails.com>
 PKG_MAINTAINER:=permails <logo@permails.com>
