@@ -44,6 +44,12 @@ var callApproveRoutes = rpc.declare({
 	expect: { code: 0 }
 });
 
+var callGetStatus = rpc.declare({
+	object: 'luci.headscale',
+	method: 'get_status',
+	expect: { }
+});
+
 function parseTimestamp(t) {
 	if (!t) return null;
 	if (typeof(t) === 'object' && t.seconds !== undefined) {
@@ -77,11 +83,13 @@ return view.extend({
 	editingRename: {},
 	editingRoutes: {},
 	tableElement: null,
+	isRunning: true,
 
 	load: function() {
 		return Promise.all([
 			callListNodes(),
-			uci.load('headscale')
+			uci.load('headscale'),
+			callGetStatus()
 		]);
 	},
 
@@ -276,12 +284,17 @@ return view.extend({
 			});
 		}
 
-		cbi_update_table(self.tableElement, rows, E('em', {}, [ _('No registered nodes found in this Headscale server.') ]));
+		var emptyMsg = self.isRunning ?
+			_('No registered nodes found in this Headscale server.') :
+			_('Headscale service is not running, unable to fetch nodes list.');
+		cbi_update_table(self.tableElement, rows, E('em', { 'style': !self.isRunning ? 'color:#a0aec0;' : '' }, [ emptyMsg ]));
 	},
 
 	render: function(data) {
 		var self = this;
 		var rawNodes = data[0];
+		var status = data[2] || {};
+		self.isRunning = (status.running === true || status.running === 1);
 		self.rawNodes = Array.isArray(rawNodes) ? rawNodes : ((rawNodes && rawNodes.nodes) ? rawNodes.nodes : []);
 		self.stagedRenames = {};
 		self.stagedRoutes = {};
@@ -298,7 +311,7 @@ return view.extend({
 				E('th', { 'class': 'th' }, [ _('IP Addresses') ]),
 				E('th', { 'class': 'th', 'style': 'width:130px;' }, [ _('OS') ]),
 				E('th', { 'class': 'th center', 'style': 'width:80px;' }, [ _('Status') ]),
-				E('th', { 'class': 'th center nowrap cbi-section-actions', 'style': 'width:230px;' }, [ _('Actions') ])
+				E('th', { 'class': 'th center nowrap cbi-section-actions', 'style': 'width:230px;' }, [ _('Action') ])
 			])
 		]);
 
@@ -307,7 +320,7 @@ return view.extend({
 		return E('div', { 'class': 'cbi-map' }, [
 			E('h2', {}, [ _('Headscale - Registered Nodes') ]),
 			E('div', { 'class': 'cbi-map-descr' }, [
-				_('Manage all connected Tailscale client devices and machines registered to this Headscale coordination server.')
+				_('Manage all Tailscale client devices and nodes registered to this Headscale server.')
 			]),
 			E('div', { 'class': 'cbi-section' }, [
 				self.tableElement

@@ -53,10 +53,10 @@ function renderFwBadge(fwStatus) {
 	if (fwStatus && (fwStatus.opened === true || fwStatus.opened === 1)) {
 		if (fwStatus.synced === false) {
 			return E('span', { 'class': 'badge label warning', 'style': 'font-size:12px;padding:3px 8px;' }, [
-				'▲ ' + (fwStatus.dest_port || '') + ' ≠ ' + (fwStatus.port || '')
+				(fwStatus.dest_port || '') + ' != ' + (fwStatus.port || '')
 			]);
 		}
-		var labelText = _('OPENED') + ' (' + (fwStatus.port || '8080') + '/tcp' + (fwStatus.stun_opened ? (' + STUN ' + (fwStatus.stun_port || '3478') + '/udp') : '') + ')';
+		var labelText = _('OPENED') + ' (' + (fwStatus.port || '8188') + '/tcp' + (fwStatus.stun_opened ? (' + STUN ' + (fwStatus.stun_port || '3478') + '/udp') : '') + ')';
 		return E('span', { 'class': 'badge label success', 'style': 'font-size:12px;padding:3px 8px;' }, [ labelText ]);
 	}
 	return E('span', { 'class': 'badge label', 'style': 'font-size:12px;padding:3px 8px;' }, [
@@ -68,11 +68,11 @@ function renderFwDesc(fwStatus) {
 	if (fwStatus && (fwStatus.opened === true || fwStatus.opened === 1)) {
 		if (fwStatus.live_active) {
 			return E('span', { 'style': 'color:#16a34a;font-size:12px;display:flex;align-items:center;gap:4px;' }, [
-				'✓ ' + _('Live kernel firewall active')
+				_('Live kernel firewall active')
 			]);
 		}
 		return E('span', { 'style': 'color:#475569;font-size:12px;' }, [
-			_('Port: ') + (fwStatus.port || '8080') + '/tcp'
+			_('Port: ') + (fwStatus.port || '8188') + '/tcp'
 		]);
 	}
 	return E('span', { 'style': 'color:#a0aec0;font-size:12px;' }, [
@@ -99,8 +99,8 @@ return view.extend({
 		var nodes = Array.isArray(rawNodes) ? rawNodes : ((rawNodes && rawNodes.nodes) ? rawNodes.nodes : []);
 		var users = Array.isArray(rawUsers) ? rawUsers : ((rawUsers && rawUsers.users) ? rawUsers.users : []);
 
-		var serverUrl = uci.get('headscale', 'server', 'server_url') || 'http://192.168.1.1:8080';
-		var listenAddr = uci.get('headscale', 'server', 'listen_addr') || '0.0.0.0:8080';
+		var serverUrl = uci.get('headscale', 'server', 'server_url') || 'http://192.168.1.1:8188';
+		var listenAddr = uci.get('headscale', 'server', 'listen_addr') || '0.0.0.0:8188';
 		var baseDomain = uci.get('headscale', 'dns', 'base_domain') || 'example.com';
 		var derpEnabled = uci.get('headscale', 'derp', 'embedded_enabled') === '1';
 		var stunAddr = uci.get('headscale', 'derp', 'stun_listen_addr') || '0.0.0.0:3478';
@@ -109,14 +109,14 @@ return view.extend({
 
 		var rawLanIp = status.lan_ip || window.location.hostname || '192.168.1.1';
 		var lanIp = rawLanIp.split('/')[0];
-		var listenPort = (listenAddr.indexOf(':') !== -1) ? listenAddr.split(':')[1] : '8080';
+		var listenPort = (listenAddr.indexOf(':') !== -1) ? listenAddr.split(':')[1] : '8188';
 		var lanUrl = 'http://' + lanIp + ':' + listenPort;
 
 		var configuredServerUrl = uci.get('headscale', 'server', 'server_url');
 		var wanIp = status.wan_ip ? status.wan_ip.split('/')[0] : '';
 		var wanUrl = '';
 
-		if (configuredServerUrl && configuredServerUrl !== 'http://192.168.1.1:8080' && configuredServerUrl !== 'http://127.0.0.1:8080' && configuredServerUrl.indexOf(lanIp) === -1) {
+		if (configuredServerUrl && configuredServerUrl !== 'http://192.168.1.1:8188' && configuredServerUrl !== 'http://127.0.0.1:8188' && configuredServerUrl.indexOf(lanIp) === -1) {
 			wanUrl = configuredServerUrl;
 		} else if (status.cert_domain) {
 			wanUrl = 'https://' + status.cert_domain + ':' + listenPort;
@@ -132,7 +132,7 @@ return view.extend({
 		});
 
 		function triggerFirewallToggle(targetState) {
-			var port = listenPort || fwStatus.port || '8080';
+			var port = listenPort || fwStatus.port || '8188';
 			var sPort = stunPort || fwStatus.stun_port || '3478';
 			var isDerp = derpEnabled || fwStatus.derp_enabled;
 
@@ -146,12 +146,12 @@ return view.extend({
 						E('div', { 'style': 'margin-bottom:8px;font-family:monospace;font-size:13px;display:flex;align-items:center;gap:8px;' }, [
 							E('span', { 'class': 'badge label success', 'style': 'font-size:11px;' }, [ 'TCP' ]),
 							E('strong', {}, [ 'Allow-Headscale:' ]),
-							E('span', { 'style': 'color:#4a5568;' }, [ _('WAN Zone ➔ Router Local (Port %s) ➔ ACCEPT').format(port) ])
+							E('span', { 'style': 'color:#4a5568;' }, [ _('WAN Zone -> Router Local (Port %s) -> ACCEPT').format(port) ])
 						]),
 						isDerp ? E('div', { 'style': 'font-family:monospace;font-size:13px;display:flex;align-items:center;gap:8px;' }, [
 							E('span', { 'class': 'badge label', 'style': 'background:#3b82f6;color:#fff;font-size:11px;' }, [ 'UDP' ]),
 							E('strong', {}, [ 'Allow-Headscale-STUN:' ]),
-							E('span', { 'style': 'color:#4a5568;' }, [ _('WAN Zone ➔ STUN Relay (Port %s) ➔ ACCEPT').format(sPort) ])
+							E('span', { 'style': 'color:#4a5568;' }, [ _('WAN Zone -> STUN Relay (Port %s) -> ACCEPT').format(sPort) ])
 						]) : ''
 					]),
 					E('p', { 'style': 'font-size:12px;color:#718096;margin:0;' }, [
@@ -252,7 +252,15 @@ return view.extend({
 			}, [
 				E('div', { 'style': 'display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;' }, [
 					E('span', { 'style': 'font-size:12px;color:#718096;font-weight:bold;' }, [ _('WAN Firewall') ]),
-					E('span', { 'style': 'font-size:11px;color:#3b82f6;text-decoration:underline;' }, [ fwStatus.opened ? _('Manage') : _('Enable') ])
+					E('button', {
+						'class': 'btn cbi-button cbi-button-neutral',
+						'style': 'font-size:11px;padding:2px 8px;',
+						'click': function(ev) {
+							ev.preventDefault();
+							ev.stopPropagation();
+							triggerFirewallToggle(!fwStatus.opened);
+						}
+					}, [ fwStatus.opened ? _('Manage') : _('Enable') ])
 				]),
 				E('div', { 'id': 'hs_stat_fw', 'style': 'margin-bottom:4px;' }, [
 					renderFwBadge(fwStatus)

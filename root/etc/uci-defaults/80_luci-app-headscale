@@ -1,0 +1,32 @@
+#!/bin/sh
+# Initialize default UCI configuration for luci-app-headscale
+# Copyright (C) 2026 permails <logo@permails.com>
+
+uci -q get headscale.server >/dev/null || {
+	uci set headscale.server=headscale
+}
+
+[ -z "$(uci -q get headscale.server.server_url)" ] && {
+	uci set headscale.server.server_url='http://192.168.1.1:8188'
+}
+
+[ -z "$(uci -q get headscale.server.listen_addr)" ] && {
+	uci set headscale.server.listen_addr='0.0.0.0:8188'
+}
+
+# If it was left at old default 8080, migrate to 8188
+if [ "$(uci -q get headscale.server.listen_addr)" = "0.0.0.0:8080" ]; then
+	uci set headscale.server.listen_addr='0.0.0.0:8188'
+fi
+
+if [ "$(uci -q get headscale.server.server_url)" = "http://192.168.1.1:8080" ]; then
+	uci set headscale.server.server_url='http://192.168.1.1:8188'
+fi
+
+# Clean up any legacy dummy sequence options from previous versions
+uci -q delete headscale.server._users_seq
+uci -q delete headscale.server._keys_seq
+uci -q delete headscale.server._acl_seq
+
+uci commit headscale
+exit 0

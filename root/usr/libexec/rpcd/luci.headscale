@@ -39,6 +39,8 @@ case "$1" in
 			"expire_preauthkey": { "user_name": "", "key": "" },
 			"get_acl": {},
 			"set_acl": { "content": "" },
+			"clean_acl_staging": {},
+			"clear_staging": { "scope": "" },
 			"get_log": { "lines": 0 },
 			"clean_log": {},
 			"get_firewall_status": {},
@@ -250,11 +252,19 @@ case "$1" in
 			;;
 
 			list_users)
-				output=$(run_headscale users list -o json 2>/dev/null)
-				if [ -z "$output" ] || [ "$output" = "null" ] || echo "$output" | grep -q 'error'; then
-					output="[]"
+				pid=$(pidof headscale)
+				if [ -z "$pid" ]; then
+					echo '{"users": []}'
+				else
+					output=$(run_headscale users list -o json 2>/dev/null)
+					if [ -z "$output" ] || [ "$output" = "null" ]; then
+						output=$(run_headscale namespaces list -o json 2>/dev/null)
+					fi
+					if [ -z "$output" ] || [ "$output" = "null" ]; then
+						output="[]"
+					fi
+					echo "{\"users\": $output}"
 				fi
-				echo "{\"users\": $output}"
 			;;
 
 			create_user)
@@ -423,18 +433,21 @@ case "$1" in
 				[ -z "$user_name" ] && json_get_var user_name user
 				[ -z "$user_name" ] && json_get_var user_name name
 				json_get_var key_val key
-				if [ -n "$key_val" ]; then
-					kid="$key_val"
+				json_get_var key_id id
+				kid="$key_id"
+				[ -z "$kid" ] && kid="$key_val"
+
+				if [ -n "$kid" ]; then
 					if ! echo "$kid" | grep -q '^[0-9]\+$'; then
-						kid=$(run_headscale preauthkeys list -o json 2>/dev/null | jsonfilter -e "@[@.key='$key_val'].id" 2>/dev/null)
+						[ -n "$user_name" ] && kid=$(run_headscale preauthkeys list -u "$user_name" -o json 2>/dev/null | jsonfilter -e "@[@.key='$key_val'].id" 2>/dev/null)
+						[ -z "$kid" ] && kid=$(run_headscale preauthkeys list -o json 2>/dev/null | jsonfilter -e "@[@.key='$key_val'].id" 2>/dev/null)
 					fi
-					[ -z "$kid" ] && kid="$key_val"
 
 					if echo "$kid" | grep -q '^[0-9]\+$'; then
-						out=$(run_headscale preauthkeys expire -i "$kid" 2>&1)
+						out=$(run_headscale preauthkeys expire -i "$kid" --force 2>&1)
 						rc=$?
 					else
-						out="Key numeric ID could not be determined"
+						out="Key numeric ID could not be determined: $key_val"
 						rc=1
 					fi
 
@@ -444,7 +457,7 @@ case "$1" in
 					json_dump
 					json_cleanup
 				else
-					echo '{"code": 1, "message": "Missing key argument"}'
+					echo '{"code": 1, "message": "Missing key or id argument"}'
 				fi
 			;;
 
@@ -464,8 +477,43 @@ case "$1" in
 				json_load "$input"
 				json_get_var content content
 				if [ -n "$content" ]; then
+					tmp_acl="/tmp/headscale_acl_staging.$$.hujson"
 					mkdir -p "$(dirname "$ACL_PATH")"
-					echo "$content" > "$ACL_PATH"
+					echo "$content" > "$tmp_acl"
+
+					# 如果 Headscale 正在运行，使用官方 policy check 命令进行原子预校验
+					pid=$(pidof headscale)
+					if [ -n "$pid" ] && [ -x "$HEADSCALE_BIN" ]; then
+						check_out=""
+						if [ -f "$CONFIG_PATH" ]; then
+							check_out=$("$HEADSCALE_BIN" -c "$CONFIG_PATH" policy check -f "$tmp_acl" 2>&1)
+						else
+							check_out=$("$HEADSCALE_BIN" policy check -f "$tmp_acl" 2>&1)
+						fi
+						check_rc=$?
+
+						if [ $check_rc -ne 0 ]; then
+							rm -f "$tmp_acl"
+							# 提取精炼的报错信息
+							clean_msg=$(echo "$check_out" | grep -iE 'error|invalid|parsing' | head -n 2 | tr '\n' ' ' | sed 's/"/\\"/g')
+							[ -z "$clean_msg" ] && clean_msg="策略语法校验失败"
+							json_init
+							json_add_int code 1
+							json_add_string message "$clean_msg"
+							json_dump
+							json_cleanup
+							exit 0
+						fi
+					fi
+
+					# 校验通过，原子替换目标文件
+					mv -f "$tmp_acl" "$ACL_PATH"
+					# Stage a delete for the temporary _acl_content staging option
+					# so the standard "uci apply" resolves set+delete to a no-op
+					# and the option never lands in /etc/config/headscale.
+					uci -q delete headscale.server._acl_content
+					pid=$(pidof headscale 2>/dev/null)
+					[ -n "$pid" ] && kill -HUP "$pid" 2>/dev/null
 					json_init
 					json_add_int code 0
 					json_add_string message "ACL saved successfully"
@@ -476,6 +524,38 @@ case "$1" in
 				fi
 			;;
 
+			clean_acl_staging)
+				# Drop the staging-only _acl_content option that the standard
+				# uci apply committed into /etc/config/headscale, keeping the
+				# base config tidy and leaving no pending delta behind.
+				uci -q delete headscale.server._acl_content
+				uci -q commit headscale
+				echo '{"code": 0, "message": "staging cleaned"}'
+			;;
+
+			clear_staging)
+				# Remove staging-only options from the pending uci delta.
+				# The browser-side uci.unset() is a no-op for options that
+				# only exist in the staging delta (never committed), so the
+				# views call this to undo a staged operation. Scope selects
+				# the page; an empty scope clears all of them.
+				read -r input
+				json_load "$input"
+				json_get_var scope scope
+				if [ "$scope" = "users" ]; then
+					uci -q delete headscale.server._users_pending
+				elif [ "$scope" = "preauthkeys" ]; then
+					uci -q delete headscale.server._preauthkeys_pending
+				elif [ "$scope" = "acl" ]; then
+					uci -q delete headscale.server._acl_content
+				else
+					uci -q delete headscale.server._users_pending
+					uci -q delete headscale.server._preauthkeys_pending
+					uci -q delete headscale.server._acl_content
+				fi
+				echo '{"code": 0, "message": "staging cleared"}'
+			;;
+
 			get_log)
 				read -r input
 				json_load "$input"
@@ -484,7 +564,9 @@ case "$1" in
 
 				log_data=""
 				if [ -f /var/log/headscale/headscale.log ] && [ -s /var/log/headscale/headscale.log ]; then
-					log_data=$(grep -i 'headscale' /var/log/headscale/headscale.log 2>/dev/null | tail -n "$lines")
+					# The file contains nothing but headscale output (written by
+					# the init script), so no content filtering is needed.
+					log_data=$(tail -n "$lines" /var/log/headscale/headscale.log 2>/dev/null)
 				fi
 
 				if [ -z "$log_data" ] && command -v logread >/dev/null 2>&1; then
@@ -523,9 +605,9 @@ case "$1" in
 
 			get_firewall_status)
 				listen_addr=$(uci -q get headscale.server.listen_addr)
-				[ -z "$listen_addr" ] && listen_addr="0.0.0.0:8080"
+				[ -z "$listen_addr" ] && listen_addr="0.0.0.0:8188"
 				port=$(echo "$listen_addr" | awk -F: '{print $NF}')
-				[ -z "$port" ] && port="8080"
+				[ -z "$port" ] && port="8188"
 
 				derp_enabled=$(uci -q get headscale.derp.embedded_enabled)
 				[ -z "$derp_enabled" ] && derp_enabled="0"
@@ -629,9 +711,9 @@ case "$1" in
 				json_get_var custom_stun_port stun_port
 
 				listen_addr=$(uci -q get headscale.server.listen_addr)
-				[ -z "$listen_addr" ] && listen_addr="0.0.0.0:8080"
+				[ -z "$listen_addr" ] && listen_addr="0.0.0.0:8188"
 				port=$(echo "$listen_addr" | awk -F: '{print $NF}')
-				[ -z "$port" ] && port="8080"
+				[ -z "$port" ] && port="8188"
 				[ -n "$custom_port" ] && port="$custom_port"
 
 				derp_enabled=$(uci -q get headscale.derp.embedded_enabled)

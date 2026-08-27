@@ -60,7 +60,7 @@ OpenWrt LuCI modern management application for the [Headscale](https://github.co
 
 ### 3. Deep UCI Configuration Management
 * Fine-grained control over core daemon parameters:
-  * Server listen address and port (`0.0.0.0:8080`).
+  * Server listen address and port (`0.0.0.0:8188`).
   * Server URL (`server_url`) for client registration endpoints.
   * Embedded DERP / STUN server configuration (`stun_listen_addr`).
   * IP allocation prefix definitions for dual-stack operation.
@@ -188,8 +188,8 @@ rm -rf /tmp/luci-indexcache /tmp/luci-modulecache
 ```uci
 config headscale 'server'
 	option enabled '1'
-	option server_url 'http://192.168.1.1:8080'
-	option listen_addr '0.0.0.0:8080'
+	option server_url 'http://192.168.1.1:8188'
+	option listen_addr '0.0.0.0:8188'
 	option metrics_listen_addr '0.0.0.0:9090'
 	option stun_listen_addr '0.0.0.0:3478'
 	option base_domain 'example.net'

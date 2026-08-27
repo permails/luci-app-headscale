@@ -68,7 +68,7 @@ msgid "ACCEPT"
 msgstr "允许 (ACCEPT)"
 
 msgid "ACL Policy"
-msgstr "访问控制策略"
+msgstr "访问控制"
 
 msgid "ACL policy reset to default (pending save)."
 msgstr "ACL 策略已重置为默认值（待保存并应用）。"
@@ -86,7 +86,7 @@ msgid "Absolute path to custom TLS private key file (.key). Leave empty to use s
 msgstr "自定义 TLS 私钥文件的绝对路径（.key）。留空则自动使用系统私钥。"
 
 msgid "Access Control Rules"
-msgstr "Access Control Rules"
+msgstr "访问控制规则"
 
 msgid "Action"
 msgstr "快捷操作"
@@ -101,7 +101,7 @@ msgid "Add"
 msgstr "添加"
 
 msgid "Add New Access Rule"
-msgstr "Add New Access Rule"
+msgstr "新增访问规则"
 
 msgid "Address and port to bind the Headscale HTTP server."
 msgstr "Headscale HTTP 控制服务绑定的本地 IP 与监听端口。"
@@ -583,11 +583,14 @@ msgstr "前往常规设置"
 msgid "Go to User Management"
 msgstr "前往用户管理"
 
+msgid "HeadScale"
+msgstr "HeadScale服务器"
+
 msgid "Headscale"
-msgstr "异地组网服务器"
+msgstr "HeadScale服务器"
 
 msgid "Headscale - Access Control Policy (ACL)"
-msgstr "Headscale - ACL 访问控制策略"
+msgstr "Headscale - 访问控制策略"
 
 msgid "Headscale - Control Server"
 msgstr "Headscale - 控制端服务器"
@@ -596,7 +599,7 @@ msgid "Headscale - Pre-Auth Keys"
 msgstr "Headscale - 预授权密钥"
 
 msgid "Headscale - Pre-Authentication Keys"
-msgstr "Headscale - 预授权密钥 (Pre-Auth Keys)"
+msgstr "Headscale - 预授权密钥"
 
 msgid "Headscale - Registered Nodes"
 msgstr "Headscale - 节点管理"
@@ -614,10 +617,10 @@ msgid "Headscale - Users"
 msgstr "Headscale - 用户管理"
 
 msgid "Headscale - Users / Namespaces"
-msgstr "Headscale - 用户 / 命名空间管理"
+msgstr "Headscale - 用户管理"
 
 msgid "Headscale Server"
-msgstr "Headscale 服务端"
+msgstr "HeadScale服务器"
 
 msgid "Headscale daemon must be running in order to create users, generate pre-auth keys, or manage nodes."
 msgstr "Headscale 守护进程必须处于运行状态，方可创建用户、生成预授权密钥或管理节点。"
@@ -631,8 +634,8 @@ msgstr "Headscale 节点必须归属于某个用户。输入一个简短用户�
 msgid "Headscale service is currently stopped."
 msgstr "Headscale 服务当前未运行。"
 
-msgid "Hold Option (⌥) and click top menu bar Tailscale icon -> \"Custom Login Server\" -> enter URL."
-msgstr "按住 Option (⌥) 键点击顶部菜单栏 Tailscale 图标 -> 选择“Custom Login Server” -> 粘贴服务器地址。"
+msgid "Hold Option key and click top menu bar Tailscale icon -> \"Custom Login Server\" -> enter URL."
+msgstr "按住 Option 键点击顶部菜单栏 Tailscale 图标 -> 选择“Custom Login Server” -> 粘贴服务器地址。"
 
 msgid "Hold Shift and right-click Tailscale tray icon -> \"Custom Login Server\" -> enter URL; or run in CMD/PowerShell."
 msgstr "按住 Shift 键右键点击 Tailscale 托盘图标 -> 选择“Custom Login Server” -> 粘贴服务器地址；或在终端中运行登录命令。"
@@ -653,7 +656,7 @@ msgid "Human-friendly region description."
 msgstr "易于辨识的 DERP 区域描述名称。"
 
 msgid "ID"
-msgstr "ID"
+msgstr "编号"
 
 msgid "INFO"
 msgstr "信息"
@@ -712,6 +715,9 @@ msgstr "局域网服务器地址已复制到剪贴板。"
 msgid "LAN Server URL:"
 msgstr "局域网访问地址 (LAN URL)："
 
+msgid "Linux (Debian/Ubuntu/CentOS/Arch)"
+msgstr "Linux 系统（Debian / Ubuntu / CentOS / Arch）"
+
 msgid "List of URLs to fetch external DERP maps from."
 msgstr "用于获取外部公共 DERP 映射列表的 URL 地址。"
 
@@ -751,11 +757,14 @@ msgstr "日志内容已成功复制到剪贴板。"
 msgid "Log file downloaded: "
 msgstr "日志文件已下载: "
 
-msgid "Log in to your optical ISP modem admin page -> find \"Port Forwarding / Virtual Server\" -> forward external TCP 8080 to this OpenWrt router WAN IP."
-msgstr "登录光猫管理后台 -> 找到“端口映射/虚拟服务器” -> 将外网 TCP 8080 端口转发到本 OpenWrt 路由器的 WAN 口 IP。"
+msgid "Log in to your optical ISP modem admin page -> find \"Port Forwarding / Virtual Server\" -> forward external TCP 8188 to this OpenWrt router WAN IP."
+msgstr "登录光猫管理后台 -> 找到“端口映射/虚拟服务器” -> 将外网 TCP 8188 端口转发到本 OpenWrt 路由器的 WAN 口 IP。"
 
 msgid "Logging"
 msgstr "日志"
+
+msgid "macOS (Standalone / App Store)"
+msgstr "macOS（独立版 / App Store）"
 
 msgid "MagicDNS"
 msgstr "MagicDNS 域名"
@@ -763,8 +772,8 @@ msgstr "MagicDNS 域名"
 msgid "MagicDNS Base Domain"
 msgstr "MagicDNS 基础域名"
 
-msgid "Make sure \"Enable Headscale Service\" is checked. If you need remote access outside your home, enter your DDNS domain in \"Server URL\" (e.g. http://myrouter.ddns.net:8080) and check \"Open Firewall Port\". Default port is 8080."
-msgstr "确保已勾选“启用 Headscale 服务”。若需在家庭外远程连接，请在“服务器地址”填入 DDNS 域名（如 http://myrouter.ddns.net:8080）并勾选“开启防火墙端口”（默认 8080）。"
+msgid "Make sure \"Enable Headscale Service\" is checked. If you need remote access outside your home, enter your DDNS domain in \"Server URL\" (e.g. http://myrouter.ddns.net:8188) and check \"Open Firewall Port\". Default port is 8188."
+msgstr "确保已勾选“启用 Headscale 服务”。若需在家庭外远程连接，请在“服务器地址”填入 DDNS 域名（如 http://myrouter.ddns.net:8188）并勾选“开启防火墙端口”（默认 8188）。"
 
 msgid "Manage Headscale users (namespaces) for segmenting registered nodes and generating authentication keys."
 msgstr "管理 Headscale 用户（命名空间），用于隔离划分注册节点并生成专属入网凭证。"
@@ -1043,7 +1052,7 @@ msgid "Rename failed: %s"
 msgstr "重命名失败：%s"
 
 msgid "Reset"
-msgstr "复位"
+msgstr "恢复"
 
 msgid "Reset ACL policy to Default (Allow All Traffic)?"
 msgstr "确定要将 ACL 策略重置为默认值（允许所有设备全互通）吗？"
@@ -1264,8 +1273,8 @@ msgstr "目标归属用户"
 msgid "Text (Human Readable)"
 msgstr "纯文本 (人类可读)"
 
-msgid "The URL clients will connect to. Example: http://192.168.1.1:8080 or https://headscale.example.com"
-msgstr "客户端连接服务器所使用的对外地址。示例：http://192.168.1.1:8080 或 https://headscale.example.com"
+msgid "The URL clients will connect to. Example: http://192.168.1.1:8188 or https://headscale.example.com"
+msgstr "客户端连接服务器所使用的对外地址。示例：http://192.168.1.1:8188 或 https://headscale.example.com"
 
 msgid "The following Pre-Auth Keys have been generated:"
 msgstr "以下预授权密钥已成功生成："
@@ -1399,6 +1408,9 @@ msgstr "Web 网站服务 (HTTP/HTTPS: 80, 443)"
 msgid "When client devices (phones, computers, NAS) enroll with a Pre-Auth Key, they will automatically appear here."
 msgstr "当客户端设备（手机、电脑、NAS）使用预授权密钥完成配网后，将自动在此显示。"
 
+msgid "Windows (10 / 11)"
+msgstr "Windows 系统（10 / 11）"
+
 msgid "Windows File Sharing (SMB: 445)"
 msgstr "Windows 局域网文件共享 (SMB: 445)"
 
@@ -1421,7 +1433,7 @@ msgid "gRPC Listen Address"
 msgstr "gRPC 内部监听地址"
 
 msgid "iOS (iPhone / iPad)"
-msgstr "iOS (iPhone / iPad)"
+msgstr "iOS 设备（iPhone / iPad）"
 
 msgid "nodes"
 msgstr "台设备"
@@ -1453,11 +1465,11 @@ msgstr "开启"
 msgid "You are about to deploy the following WAN firewall rules to allow external connections:"
 msgstr "即将向系统防火墙下发以下放行规则以允许外网连接："
 
-msgid "WAN Zone ➔ Router Local (Port %s) ➔ ACCEPT"
-msgstr "WAN 区域 ➔ 路由器本机 (TCP %s 端口) ➔ 放行 (ACCEPT)"
+msgid "WAN Zone -> Router Local (Port %s) -> ACCEPT"
+msgstr "WAN 区域 -> 路由器本机 (TCP %s 端口) -> 放行 (ACCEPT)"
 
-msgid "WAN Zone ➔ STUN Relay (Port %s) ➔ ACCEPT"
-msgstr "WAN 区域 ➔ STUN 中继 (UDP %s 端口) ➔ 放行 (ACCEPT)"
+msgid "WAN Zone -> STUN Relay (Port %s) -> ACCEPT"
+msgstr "WAN 区域 -> STUN 中继 (UDP %s 端口) -> 放行 (ACCEPT)"
 
 msgid "Once deployed and reloaded, external Tailscale clients can connect directly using your WAN IP or DDNS domain."
 msgstr "规则下发并重载后，外网 Tailscale 客户端可通过公网 IP 或 DDNS 域名直接连接自建服务器。"
@@ -1516,5 +1528,362 @@ msgstr "更新防火墙规则失败："
 msgid "Failed to update firewall: "
 msgstr "更新防火墙规则失败："
 
+msgid "Service not running, unable to create user"
+msgstr "服务未运行，无法创建用户"
 
+msgid "Headscale service is not running"
+msgstr "Headscale 服务未运行"
 
+msgid "Headscale service is not running, unable to fetch user list."
+msgstr "Headscale 服务未运行，无法获取用户列表。"
+
+msgid "-- Service not running, no users available --"
+msgstr "-- 服务未运行，暂无可选用户 --"
+
+msgid "-- No users found (create a user first) --"
+msgstr "-- 暂无可用用户 (请先创建用户) --"
+
+msgid "Headscale service is not running, unable to fetch pre-auth keys."
+msgstr "Headscale 服务未运行，无法获取预授权密钥。"
+
+msgid "Headscale service is not running, unable to fetch nodes list."
+msgstr "Headscale 服务未运行，无法获取节点列表。"
+
+msgid "Service not running"
+msgstr "服务未运行"
+
+msgid "Create a user first"
+msgstr "请先创建用户"
+
+msgid "Please complete all rule fields."
+msgstr "请填写完整的规则配置。"
+
+msgid "This rule already exists (Rule #%d). Cannot add duplicate."
+msgstr "该规则已存在于列表中（第 %d 条），请勿重复添加。"
+
+msgid "Confirm Delete User"
+msgstr "确认删除用户"
+
+msgid "Are you sure you want to delete user \"%s\"? All devices under this user may lose connection."
+msgstr "确定要删除用户“%s”吗？该用户下的所有设备可能会失去连接。"
+
+msgid "Confirm Expire Key"
+msgstr "确认撤销密钥"
+
+msgid "Are you sure you want to expire this pre-auth key (%s)?"
+msgstr "确定要撤销此预授权密钥（%s）吗？"
+
+msgid "Save & Apply ACL Policy"
+msgstr "保存并应用 ACL 访问策略"
+
+msgid "Reset Changes"
+msgstr "放弃更改"
+
+msgid "ACL policy successfully saved."
+msgstr "ACL 访问策略已成功保存。"
+
+msgid "Upstream Nameservers"
+msgstr "全局上游 DNS 解析服务器"
+
+msgid "DERP Region ID"
+msgstr "DERP 区域 ID"
+
+msgid "DERP Region Name"
+msgstr "DERP 区域名称"
+
+msgid "Auto Update Public DERP List"
+msgstr "自动更新公共 DERP 列表"
+
+msgid "Use System Web SSL Certificate (uhttpd / Nginx)"
+msgstr "自动复用系统 Web SSL 证书 (uhttpd / Nginx)"
+
+msgid "When HTTPS is enabled, automatically use router system certificates."
+msgstr "当使用 HTTPS 协议时，自动加载路由器系统的 Web 证书及私钥。"
+
+msgid "Custom TLS Certificate Path"
+msgstr "自定义 TLS 证书文件路径"
+
+msgid "Custom TLS Key Path"
+msgstr "自定义 TLS 私钥文件路径"
+
+msgid "Pre-Auth Keys List"
+msgstr "预授权密钥列表"
+
+msgid "All Connected Devices (*)"
+msgstr "所有已连接设备 (*)"
+
+msgid "All Member Devices (autogroup:member)"
+msgstr "所有普通成员设备 (autogroup:member)"
+
+msgid "All Tagged Devices (autogroup:tagged)"
+msgstr "所有带标签的服务设备 (autogroup:tagged)"
+
+msgid "All Destination Devices (*)"
+msgstr "所有目标设备 (*)"
+
+msgid "1. Source Device (Initiator)"
+msgstr "1. 发起源设备（流量发起方）"
+
+msgid "2. Destination Device / Subnet"
+msgstr "2. 目标设备 / 子网（流量目的方）"
+
+msgid "3. Allowed Services & Ports"
+msgstr "3. 允许放行的服务与端口"
+
+msgid "Own Devices (autogroup:self)"
+msgstr "同属自己的设备 (autogroup:self)"
+
+msgid "Own Devices (autogroup:self) - [Tagged devices have no user, unavailable]"
+msgstr "同属自己的设备 (autogroup:self) - [Tag设备无所属用户，不可用]"
+
+msgid "Home Local LAN (192.168.1.0/24)"
+msgstr "家庭本地局域网 (192.168.1.0/24)"
+
+msgid "-- Custom IP / CIDR Subnet --"
+msgstr "-- 自定义 IP / CIDR 网段 --"
+
+msgid "-- Custom Port Number --"
+msgstr "-- 自定义端口号 --"
+
+msgid "Web Services (HTTP/HTTPS: 80, 443)"
+msgstr "Web 网页服务 (HTTP/HTTPS: 80, 443)"
+
+msgid "SSH Terminal (22)"
+msgstr "远程 SSH 终端 (22)"
+
+msgid "Remote Desktop (RDP/VNC: 3389, 5900)"
+msgstr "远程桌面 (RDP/VNC: 3389, 5900)"
+
+msgid "Windows File Sharing (SMB: 445)"
+msgstr "Windows 文件共享 (SMB: 445)"
+
+msgid "ACL policy validation failed"
+msgstr "ACL 策略语法校验未通过"
+
+msgid "Absolute path to TLS certificate file (.crt / .pem). Leave empty to use system cert."
+msgstr "TLS 证书文件完整路径（.crt / .pem）。留空则使用系统证书。"
+
+msgid "Absolute path to TLS private key file (.key). Leave empty to use system key."
+msgstr "TLS 私钥文件完整路径（.key）。留空则使用系统私钥。"
+
+msgid "Add Rule"
+msgstr "添加规则"
+
+msgid "All Destination Devices & Ports (*:*)"
+msgstr "所有目标设备与端口 (*:*)"
+
+msgid "All Ports"
+msgstr "所有端口"
+
+msgid "Allow this key to be used more than once."
+msgstr "允许重复使用此密钥注册多台设备。"
+
+msgid "Apply unchecked"
+msgstr "强制应用（不检查）"
+
+msgid "Automatically open WAN firewall port (TCP 8188) to allow external devices to connect."
+msgstr "自动放行 WAN 口防火墙端口（TCP 8188），以便公网设备能够正常连接。"
+
+msgid "Automatically register node hostnames as reachable DNS records."
+msgstr "自动将各节点主机名注册为内部可互相解析的 DNS 记录。"
+
+msgid "Click \"Create Pre-Auth Key\", select your user, check \"Reusable\" so all your family devices can use the same key, and click Create. Copy the generated key."
+msgstr "点击“创建新预授权密钥”，选择用户，勾选“可复用”，点击创建并复制生成的密钥。"
+
+msgid "Copy Join Command"
+msgstr "复制入网命令"
+
+msgid "Create and manage pre-authentication keys for client registration without interactive login."
+msgstr "创建和管理预授权密钥，用于客户端设备免密快捷接入。"
+
+msgid "Custom search domains pushed to Tailscale clients."
+msgstr "下发给 Tailscale 客户端的自定义搜索域后缀。"
+
+msgid "Custom tag (%s) requires tagOwners defined on the server."
+msgstr "使用自定义标签（%s）前，需在服务端事先配置 tagOwners。"
+
+msgid "DNS resolvers pushed to connected Tailscale clients (e.g. 223.5.5.5, 119.29.29.29, 1.1.1.1)."
+msgstr "下发给客户端的上游 DNS 解析服务器（如 223.5.5.5, 119.29.29.29, 1.1.1.1）。"
+
+msgid "Destination Device & Port (What)"
+msgstr "目标设备与放行端口 (What)"
+
+msgid "Detected system SSL certificate: "
+msgstr "检测到系统 SSL 证书："
+
+msgid "Domain suffix used for MagicDNS (e.g. example.com or home.internal)."
+msgstr "MagicDNS 使用的基础域名后缀（如 example.com 或 home.internal）。"
+
+msgid "Error (Errors Only)"
+msgstr "错误 (仅记录错误)"
+
+msgid "Expired / Used"
+msgstr "已失效 / 已使用"
+
+msgid "Format of daemon logs."
+msgstr "守护进程日志输出格式。"
+
+msgid "Frequency for updating public DERP map list (default 24h)."
+msgstr "公共 DERP 中继列表的自动更新周期（默认 24h）。"
+
+msgid "Full Key"
+msgstr "完整密钥"
+
+msgid "Headscale does not support \"autogroup:admin\". Please use autogroup:member or autogroup:tagged."
+msgstr "Headscale 不支持 “autogroup:admin”。请使用 autogroup:member 或 autogroup:tagged。"
+
+msgid "Headscale requires devices to belong to a user. Enter a simple username (e.g. \"admin\" or \"family\") and click \"Create User\"."
+msgstr "Headscale 要求设备归属于特定用户。输入用户名（如 admin 或 family）并点击“创建新用户”。"
+
+msgid "Hold Option key and click top menu bar Tailscale icon -> \"Custom Login Server\" -> enter URL."
+msgstr "按住 Option 键点击顶部菜单栏 Tailscale 图标 -> 点击“Custom Login Server” -> 粘贴服务器地址。"
+
+msgid "Hold Shift and right-click Tailscale tray icon -> \"Custom Login Server\" -> enter URL; or run in CMD/PowerShell."
+msgstr "按住 Shift 右键点击任务栏 Tailscale 图标 -> 点击“Custom Login Server” -> 输入服务器地址；或在终端命令行登录。"
+
+msgid "Human-readable name for embedded DERP region."
+msgstr "内置 DERP 区域的自定义友好名称。"
+
+msgid "Install official Tailscale App on your phone/PC, enter your Server URL and Auth Key to connect. Once connected, your device will appear in the \"Nodes\" tab!"
+msgstr "在手机或电脑上安装 Tailscale 官方客户端，填入服务器地址和密钥即可连接。连接成功后设备会显示在“节点管理”列表中！"
+
+msgid "Invalid port format. Examples: 80, 80,443, 9000-9100, or *."
+msgstr "端口格式不正确，允许格式示例：80、80,443、9000-9100 或 *。"
+
+msgid "JSON (Structured Data)"
+msgstr "JSON 格式 (结构化数据)"
+
+msgid "Key & Registration Command"
+msgstr "密钥与入网接入命令"
+
+msgid "Log in to your optical ISP modem admin page -> find \"Port Forwarding / Virtual Server\" -> forward external TCP 8188 to this OpenWrt router WAN IP."
+msgstr "登录光猫管理后台 -> 找到“端口转发 / 虚拟服务器” -> 将外网 TCP 8188 端口转发到本 OpenWrt 路由器的 WAN 口 IP。"
+
+msgid "Make sure \"Enable Headscale Service\" is checked. If you need remote access outside your home, enter your DDNS domain in \"Server URL\" (e.g. http://myrouter.ddns.net:8188) and check \"Open Firewall Port\". Default port is 8188."
+msgstr "确保勾选“启用 Headscale 服务”。如果需要在外网远程访问，请在“服务器对外地址”填入 DDNS 域名（如 http://myrouter.ddns.net:8188）并勾选“开启防火墙端口”。默认端口为 8188。"
+
+msgid "Manage Headscale users (namespaces) to isolate nodes and generate credentials."
+msgstr "管理 Headscale 用户（命名空间），用于隔离划分注册节点并生成专属入网凭证。"
+
+msgid "Manage all Tailscale client devices and nodes registered to this Headscale server."
+msgstr "管理已连接并注册到本 Headscale 控制服务器的所有 Tailscale 客户端设备与节点。"
+
+msgid "Manage inter-device connectivity permissions and network access control policies."
+msgstr "管理设备间互联互通权限与网络安全访问策略。"
+
+msgid "No system SSL certificate detected at default paths (/etc/uhttpd.crt)."
+msgstr "在系统默认路径 (/etc/uhttpd.crt) 未检测到 SSL 证书。"
+
+msgid "Nodes created with this key are automatically removed when disconnected."
+msgstr "设备离线断开后，自动从服务器注销并删除该节点。"
+
+msgid "Numeric ID for embedded DERP region (default 999)."
+msgstr "内置 DERP 区域的数字编号（默认 999）。"
+
+msgid "Only allow nodes registered on this Headscale server to use the relay."
+msgstr "仅允许本 Headscale 服务端所注册的节点使用内置中继。"
+
+msgid "Open iOS system Settings -> scroll down to Tailscale -> enable \"Custom Server\" -> paste server URL."
+msgstr "打开 iOS 系统设置 -> 下拉找到 Tailscale -> 开启“Custom Server” -> 粘贴服务器地址。"
+
+msgid "Own Devices (All Ports)"
+msgstr "同用户设备 (所有端口)"
+
+msgid "Periodically fetch updated public DERP server maps from official Tailscale servers."
+msgstr "定期从 Tailscale 官方服务器拉取最新的公共中继服务器列表。"
+
+msgid "Please specify source, destination and port."
+msgstr "请完整填写或选择规则发起源、目标设备和放行端口。"
+
+msgid "Pre-auth keys allow automated non-interactive login. Generated keys and commands are securely stored below."
+msgstr "预授权密钥可让设备实现自动化免交互直接注册入网。生成的密钥与接入命令将永久记录在下方列表中。"
+
+msgid "RDP/VNC: 3389, 5900"
+msgstr "远程桌面 (RDP/VNC: 3389, 5900)"
+
+msgid "Random (Recommended)"
+msgstr "随机分配 (推荐)"
+
+msgid "Run an embedded DERP relay on this router for NAT traversal."
+msgstr "在路由器上运行内置 DERP 中继，协助复杂网络环境下的 NAT 打洞与穿透。"
+
+msgid "SMB: 445"
+msgstr "文件共享 (SMB: 445)"
+
+msgid "SSH: 22"
+msgstr "远程终端 (SSH: 22)"
+
+msgid "Sequential"
+msgstr "顺序递增分配"
+
+msgid "Simply check \"Open Firewall Port\" in the Settings tab. Remote mobile devices can connect anytime using your DDNS domain name."
+msgstr "只需在“设置”选项卡中勾选“开启防火墙端口”，外网设备即可通过 DDNS 域名随时连接。"
+
+msgid "Source Device (Who)"
+msgstr "发起源设备 (Who)"
+
+msgid "Source cannot be \"autogroup:self\". Please use * or autogroup:member."
+msgstr "发起源不支持 “autogroup:self”（仅目标支持同用户设备）。请使用 * 或 autogroup:member。"
+
+msgid "Strategy for assigning virtual IP addresses to new nodes."
+msgstr "为新注册节点分配虚拟 IP 地址的分配算法。"
+
+msgid "Tagged Devices (%s)"
+msgstr "指定标签设备 (%s)"
+
+msgid "Time duration string, e.g. 1h, 24h, 720h (30 days)."
+msgstr "有效时长格式：1h (1小时)、24h (24小时)、720h (30天) 等。"
+
+msgid "UDP address for STUN NAT discovery."
+msgstr "用于 STUN NAT 探测发现的 UDP 监听地址。"
+
+msgid "URLs to fetch external DERP map definitions."
+msgstr "用于拉取外部 DERP 中继定义文件的 URL 列表。"
+
+msgid "Verbosity of the daemon log (Set to Debug when troubleshooting)."
+msgstr "守护进程日志详细程度级别（故障排查时建议设为 Debug）。"
+
+msgid "Warn (Warnings Only)"
+msgstr "警告 (仅记录警告与错误)"
+
+msgid "Web HTTP/HTTPS: 80, 443"
+msgstr "Web 网页服务 (HTTP/HTTPS: 80, 443)"
+
+msgid "Tagged devices (autogroup:tagged) and IP subnets have no user ownership. Destination cannot be \"autogroup:self\"."
+msgstr "「带标签的服务设备 (autogroup:tagged)」与 IP 网段无特定归属用户，目标不能选择「同属自己的设备 (autogroup:self)」。"
+
+msgid "Destination must end with a port section, e.g. \"%s\"."
+msgstr "目标地址必须以端口段结尾，例如“%s”。"
+
+msgid "Restore"
+msgstr "恢复"
+
+msgid "Failed to apply operation #%d (%s): %s"
+msgstr "应用第 %d 项操作失败（%s）：%s"
+
+msgid "users"
+msgstr "用户"
+
+msgid "pre-auth keys"
+msgstr "预授权密钥"
+
+msgid "ACL policy"
+msgstr "ACL 策略"
+
+msgid "Please enter a username."
+msgstr "请输入用户名。"
+
+msgid "Username may only contain letters, digits, \".\", \"-\" and \"_\", and must start with a letter or digit."
+msgstr "用户名只能包含字母、数字、“.”、“-”、“_”，且必须以字母或数字开头。"
+
+msgid "A user with this name already exists."
+msgstr "已存在同名用户。"
+
+msgid "This user is already staged for creation."
+msgstr "该用户已在待创建列表中。"
+
+msgid "Staged changes only take effect after \"Save & Apply\"."
+msgstr "暂存的更改只有在“保存并应用”后才会真正生效。"
+
+msgid "Invalid expiration format. Examples: 1h, 24h, 720h (30 days)."
+msgstr "有效期格式无效。例如：1h、24h、720h（30 天）。"

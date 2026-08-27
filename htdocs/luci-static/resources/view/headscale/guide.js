@@ -26,18 +26,18 @@ return view.extend({
 
 	render: function(data) {
 		var status = data[1] || {};
-		var serverUrl = uci.get('headscale', 'server', 'server_url') || 'http://192.168.1.1:8080';
-		var listenAddr = uci.get('headscale', 'server', 'listen_addr') || '0.0.0.0:8080';
+		var serverUrl = uci.get('headscale', 'server', 'server_url') || 'http://192.168.1.1:8188';
+		var listenAddr = uci.get('headscale', 'server', 'listen_addr') || '0.0.0.0:8188';
 		var rawLanIp = status.lan_ip || window.location.hostname || '192.168.1.1';
 		var lanIp = rawLanIp.split('/')[0];
-		var listenPort = (listenAddr.indexOf(':') !== -1) ? listenAddr.split(':')[1] : '8080';
+		var listenPort = (listenAddr.indexOf(':') !== -1) ? listenAddr.split(':')[1] : '8188';
 		var lanUrl = 'http://' + lanIp + ':' + listenPort;
 
 		var configuredServerUrl = uci.get('headscale', 'server', 'server_url');
 		var wanIp = status.wan_ip ? status.wan_ip.split('/')[0] : '';
 		var wanUrl = '';
 
-		if (configuredServerUrl && configuredServerUrl !== 'http://192.168.1.1:8080' && configuredServerUrl !== 'http://127.0.0.1:8080' && configuredServerUrl.indexOf(lanIp) === -1) {
+		if (configuredServerUrl && configuredServerUrl !== 'http://192.168.1.1:8188' && configuredServerUrl !== 'http://127.0.0.1:8188' && configuredServerUrl.indexOf(lanIp) === -1) {
 			wanUrl = configuredServerUrl;
 		} else if (status.cert_domain) {
 			wanUrl = 'https://' + status.cert_domain + ':' + listenPort;
@@ -93,13 +93,13 @@ return view.extend({
 					E('a', { 'href': L.url('admin/vpn/headscale/settings'), 'class': 'btn cbi-button cbi-button-action', 'style': 'font-size:12px;padding:2px 8px;' }, [ _('Go to Settings Tab') ])
 				]),
 				E('div', { 'style': 'font-size:13px;color:#4a5568;line-height:1.6;' }, [
-					_('Make sure "Enable Headscale Service" is checked. If you need remote access outside your home, enter your DDNS domain in "Server URL" (e.g. http://myrouter.ddns.net:8080) and check "Open Firewall Port". Default port is 8080.')
+					_('Make sure "Enable Headscale Service" is checked. If you need remote access outside your home, enter your DDNS domain in "Server URL" (e.g. http://myrouter.ddns.net:8188) and check "Open Firewall Port". Default port is 8188.')
 				])
 			]),
 
 			// Step 2
 			E('div', { 'style': 'background:#ffffff;border:1px solid #e2e8f0;border-left:4px solid #3182ce;border-radius:4px;padding:14px 16px;' }, [
-				E('div', { 'display':'flex', 'style': 'display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;' }, [
+				E('div', { 'style': 'display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;' }, [
 					E('div', { 'style': 'font-size:14px;font-weight:bold;color:#2b6cb0;' }, [ _('Step 2: Create a User (Namespace)') ]),
 					E('a', { 'href': L.url('admin/vpn/headscale/users'), 'class': 'btn cbi-button cbi-button-action', 'style': 'font-size:12px;padding:2px 8px;' }, [ _('Go to User Management') ])
 				]),
@@ -152,7 +152,7 @@ return view.extend({
 			// Scenario 1: Pure LAN / Home
 			E('tr', { 'class': 'tr cbi-section-table-row' }, [
 				E('td', { 'class': 'td' }, [ E('strong', {}, [ _('Home / Local LAN Only') ]) ]),
-				E('td', { 'class': 'td' }, [ E('code', {}, [ 'http://192.168.1.1:8080' ]) ]),
+				E('td', { 'class': 'td' }, [ E('code', {}, [ 'http://192.168.1.1:8188' ]) ]),
 				E('td', { 'class': 'td' }, [
 					_('No extra network configuration required. All phones and computers connected to this router Wi-Fi/LAN can register and interconnect directly.')
 				])
@@ -161,7 +161,7 @@ return view.extend({
 			// Scenario 2: Public IP / Router PPPoE
 			E('tr', { 'class': 'tr cbi-section-table-row' }, [
 				E('td', { 'class': 'td' }, [ E('strong', {}, [ _('Router Dial-up (PPPoE / Public IP)') ]) ]),
-				E('td', { 'class': 'td' }, [ E('code', {}, [ 'http://<DDNS_Domain>:8080' ]) ]),
+				E('td', { 'class': 'td' }, [ E('code', {}, [ 'http://<DDNS_Domain>:8188' ]) ]),
 				E('td', { 'class': 'td' }, [
 					_('Simply check "Open Firewall Port" in the Settings tab. Remote mobile devices can connect anytime using your DDNS domain name.')
 				])
@@ -170,9 +170,9 @@ return view.extend({
 			// Scenario 3: Behind ISP Optical Modem (NAT2)
 			E('tr', { 'class': 'tr cbi-section-table-row' }, [
 				E('td', { 'class': 'td' }, [ E('strong', {}, [ _('Behind ISP Modem (Secondary Router)') ]) ]),
-				E('td', { 'class': 'td' }, [ E('code', {}, [ 'http://<DDNS_Domain>:8080' ]) ]),
+				E('td', { 'class': 'td' }, [ E('code', {}, [ 'http://<DDNS_Domain>:8188' ]) ]),
 				E('td', { 'class': 'td' }, [
-					_('Log in to your optical ISP modem admin page -> find "Port Forwarding / Virtual Server" -> forward external TCP 8080 to this OpenWrt router WAN IP.')
+					_('Log in to your optical ISP modem admin page -> find "Port Forwarding / Virtual Server" -> forward external TCP 8188 to this OpenWrt router WAN IP.')
 				])
 			])
 		]);
@@ -198,7 +198,7 @@ return view.extend({
 
 			// Linux
 			E('tr', { 'class': 'tr cbi-section-table-row' }, [
-				E('td', { 'class': 'td' }, [ E('strong', {}, [ 'Linux (Debian/Ubuntu/CentOS/Arch)' ]) ]),
+				E('td', { 'class': 'td' }, [ E('strong', {}, [ _('Linux (Debian/Ubuntu/CentOS/Arch)') ]) ]),
 				E('td', { 'class': 'td' }, [ _('Install official Tailscale package, then execute login command in root terminal.') ]),
 				E('td', { 'class': 'td' }, [ E('code', {}, [ 'tailscale up --login-server ' + serverUrl + ' --accept-routes' ]) ]),
 				E('td', { 'class': 'td right cbi-section-actions' }, [
@@ -214,7 +214,7 @@ return view.extend({
 
 			// Windows
 			E('tr', { 'class': 'tr cbi-section-table-row' }, [
-				E('td', { 'class': 'td' }, [ E('strong', {}, [ 'Windows (10 / 11)' ]) ]),
+				E('td', { 'class': 'td' }, [ E('strong', {}, [ _('Windows (10 / 11)') ]) ]),
 				E('td', { 'class': 'td' }, [ _('Hold Shift and right-click Tailscale tray icon -> "Custom Login Server" -> enter URL; or run in CMD/PowerShell.') ]),
 				E('td', { 'class': 'td' }, [ E('code', {}, [ 'tailscale up --login-server ' + serverUrl ]) ]),
 				E('td', { 'class': 'td right cbi-section-actions' }, [
@@ -230,8 +230,8 @@ return view.extend({
 
 			// macOS
 			E('tr', { 'class': 'tr cbi-section-table-row' }, [
-				E('td', { 'class': 'td' }, [ E('strong', {}, [ 'macOS (Standalone / App Store)' ]) ]),
-				E('td', { 'class': 'td' }, [ _('Hold Option (⌥) and click top menu bar Tailscale icon -> "Custom Login Server" -> enter URL.') ]),
+				E('td', { 'class': 'td' }, [ E('strong', {}, [ _('macOS (Standalone / App Store)') ]) ]),
+				E('td', { 'class': 'td' }, [ _('Hold Option key and click top menu bar Tailscale icon -> "Custom Login Server" -> enter URL.') ]),
 				E('td', { 'class': 'td' }, [ E('code', {}, [ 'tailscale up --login-server ' + serverUrl ]) ]),
 				E('td', { 'class': 'td right cbi-section-actions' }, [
 					E('button', {

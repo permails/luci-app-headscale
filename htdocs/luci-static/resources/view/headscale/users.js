@@ -9,6 +9,7 @@
 'require rpc';
 'require uci';
 'require ui';
+'require headscale_staging';
 
 var callListUsers = rpc.declare({
 	object: 'luci.headscale',
@@ -16,19 +17,24 @@ var callListUsers = rpc.declare({
 	expect: { users: [] }
 });
 
-var callCreateUser = rpc.declare({
+/* Wipes the given staging option from the uci delta. Client-side
+ * uci.unset() is a no-op for options that only exist in the staging
+ * delta (never committed), so removal must happen on the backend. */
+var callClearStaging = rpc.declare({
 	object: 'luci.headscale',
-	method: 'create_user',
-	params: [ 'name' ],
-	expect: { code: 0 }
+	method: 'clear_staging',
+	params: [ 'scope' ]
 });
 
-var callDeleteUser = rpc.declare({
+var callGetStatus = rpc.declare({
 	object: 'luci.headscale',
-	method: 'delete_user',
-	params: [ 'name' ],
-	expect: { code: 0 }
+	method: 'get_status',
+	expect: { }
 });
+
+/* UCI option (in the headscale staging delta) holding the JSON array of
+ * pending user operations which only take effect on "Save & Apply". */
+var STAGING_OPT = '_users_pending';
 
 function formatDateTime(t) {
 	if (!t) return '-';
@@ -49,19 +55,82 @@ function formatDateTime(t) {
 
 return view.extend({
 	rawUsers: [],
-	stagedCreations: [],
-	stagedDeletions: {},
+	pendingOps: [],
 	tableElement: null,
+	hintElement: null,
+	isRunning: true,
 
 	load: function() {
 		return Promise.all([
 			callListUsers(),
-			uci.load('headscale')
+			uci.load('headscale'),
+			callGetStatus()
 		]);
 	},
 
-	markUciChanged: function() {
-		uci.set('headscale', 'server', '_users_seq', Date.now().toString());
+	syncFromUCI: function() {
+		var self = this;
+		var ops = [];
+		var raw = uci.get('headscale', 'server', STAGING_OPT);
+		if (raw) {
+			try {
+				var parsed = JSON.parse(raw);
+				if (Array.isArray(parsed)) {
+					ops = parsed.filter(function(op) {
+						return op && op.uid != null && op.name &&
+							(op.op === 'create' || op.op === 'delete');
+					});
+				}
+			} catch (e) {}
+		}
+		self.pendingOps = ops;
+	},
+
+	/* Persist the current pending operations into the uci staging delta
+	 * (this is what makes the "Unsaved Changes" indicator appear). When
+	 * the list becomes empty the staged option must be wiped on the
+	 * backend, since uci.unset() cannot remove staging-only options. */
+	stageOps: function() {
+		var self = this;
+		if (self.pendingOps.length > 0) {
+			uci.set('headscale', 'server', STAGING_OPT, JSON.stringify(self.pendingOps));
+			return uci.save().then(function() { ui.changes.init(); });
+		}
+		return callClearStaging('users').then(function() {
+			uci.unload('headscale');
+			return uci.load('headscale');
+		}).then(function() { ui.changes.init(); });
+	},
+
+	newOpId: function() {
+		return Date.now().toString(36) + Math.floor(Math.random() * 65536).toString(36);
+	},
+
+	addOp: function(op) {
+		var self = this;
+		op.uid = self.newOpId();
+		self.pendingOps.push(op);
+		return self.stageOps().then(function() { self.renderTableRows(); });
+	},
+
+	removeOp: function(uid) {
+		var self = this;
+		self.pendingOps = self.pendingOps.filter(function(o) { return o.uid !== uid; });
+		return self.stageOps().then(function() { self.renderTableRows(); });
+	},
+
+	showHint: function(msg) {
+		if (this.hintElement) {
+			this.hintElement.style.display = 'block';
+			this.hintElement.textContent = msg;
+		}
+	},
+
+	clearHint: function() {
+		if (this.hintElement) {
+			this.hintElement.style.display = 'none';
+			this.hintElement.textContent = '';
+		}
 	},
 
 	renderTableRows: function() {
@@ -69,22 +138,23 @@ return view.extend({
 		if (!self.tableElement) return;
 		var rows = [];
 
-		// 1. 渲染待创建的暂存用户
-		self.stagedCreations.forEach(function(name, idx) {
+		// 1. 渲染待创建的暂存用户（仅在"保存并应用"后生效）
+		self.pendingOps.forEach(function(op) {
+			if (op.op !== 'create') return;
+
 			var undoBtn = E('button', {
 				'class': 'btn cbi-button cbi-button-reset',
 				'style': 'padding:2px 10px;font-size:12px;display:inline-block;width:auto;margin:0;',
-				'click': function() {
-					self.stagedCreations.splice(idx, 1);
-					self.markUciChanged();
-					self.renderTableRows();
+				'click': function(ev) {
+					ev.preventDefault();
+					self.removeOp(op.uid);
 				}
 			}, [ _('Undo') ]);
 
 			rows.push([
 				E('div', { 'class': 'center' }, [ E('span', { 'class': 'badge label warning' }, [ _('Pending') ]) ]),
 				E('div', {}, [
-					E('strong', { 'style': 'color:#2b6cb0;' }, [ name ]),
+					E('strong', { 'style': 'color:#2b6cb0;' }, [ op.name ]),
 					' ',
 					E('span', { 'class': 'badge label warning', 'style': 'font-size:11px;' }, [ _('To Create') ])
 				]),
@@ -96,76 +166,107 @@ return view.extend({
 		// 2. 渲染现有用户
 		if (self.rawUsers && self.rawUsers.length > 0) {
 			self.rawUsers.forEach(function(u) {
-				var isMarkedDelete = self.stagedDeletions[u.name] === true;
+				var uName = (typeof u === 'string') ? u : (u.name || u.Name || u.user || u.username || u.id || '-');
+				var uId = (typeof u === 'object' && u.id) ? u.id.toString() : '-';
+				var uCreatedAt = (typeof u === 'object') ? (u.created_at || u.createdAt) : null;
+				var deleteOp = self.pendingOps.filter(function(o) {
+					return o.op === 'delete' && o.name === uName;
+				})[0];
+				var isMarkedDelete = !!deleteOp;
 
 				var actBtn = isMarkedDelete ?
 					E('button', {
 						'class': 'btn cbi-button cbi-button-neutral',
 						'style': 'padding:2px 10px;font-size:12px;display:inline-block;width:auto;margin:0;',
-						'click': function() {
-							delete self.stagedDeletions[u.name];
-							self.markUciChanged();
-							self.renderTableRows();
+						'click': function(ev) {
+							ev.preventDefault();
+							self.removeOp(deleteOp.uid);
 						}
 					}, [ _('Undo') ]) :
 					E('button', {
 						'class': 'btn cbi-button cbi-button-remove',
 						'style': 'padding:2px 10px;font-size:12px;display:inline-block;width:auto;margin:0;',
-						'click': function() {
-							self.stagedDeletions[u.name] = true;
-							self.markUciChanged();
-							self.renderTableRows();
+						'click': function(ev) {
+							ev.preventDefault();
+							self.clearHint();
+							self.addOp({ op: 'delete', name: uName });
 						}
 					}, [ _('Delete') ]);
 
 				var nameCell = isMarkedDelete ?
 					E('div', { 'style': 'text-decoration:line-through;color:#a0aec0;' }, [
-						E('strong', {}, [ u.name || '-' ]),
+						E('strong', {}, [ uName ]),
 						' ',
 						E('span', { 'class': 'badge label danger', 'style': 'font-size:11px;' }, [ _('To Delete') ])
 					]) :
-					E('strong', {}, [ u.name || '-' ]);
+					E('strong', {}, [ uName ]);
 
 				rows.push([
-					E('div', { 'class': 'center' }, [ u.id ? u.id.toString() : '-' ]),
+					E('div', { 'class': 'center' }, [ uId ]),
 					nameCell,
 					E('div', { 'class': 'center', 'style': isMarkedDelete ? 'text-decoration:line-through;color:#a0aec0;' : '' }, [
-						formatDateTime(u.created_at || u.createdAt)
+						formatDateTime(uCreatedAt)
 					]),
 					E('div', { 'class': 'center' }, [ actBtn ])
 				]);
 			});
 		}
 
-		cbi_update_table(self.tableElement, rows, E('em', {}, [ _('No users found. Create a user above to get started.') ]));
+		var emptyMsg = self.isRunning ?
+			_('No users found. Create a user above to get started.') :
+			_('Headscale service is not running, unable to fetch user list.');
+		cbi_update_table(self.tableElement, rows, E('em', { 'style': !self.isRunning ? 'color:#a0aec0;' : '' }, [ emptyMsg ]));
 	},
 
 	render: function(data) {
 		var self = this;
 		var rawUsers = data[0];
 		var status = data[2] || {};
+		self.isRunning = (status.running === true || status.running === 1);
 		self.rawUsers = Array.isArray(rawUsers) ? rawUsers : ((rawUsers && rawUsers.users) ? rawUsers.users : []);
-		self.stagedCreations = [];
-		self.stagedDeletions = {};
+		self.syncFromUCI();
+
+		self.hintElement = E('div', {
+			'style': 'margin-top:10px;font-size:13px;color:#dc2626;display:none;'
+		}, []);
 
 		var handleAddUser = function() {
+			if (!self.isRunning) return;
 			var nameInput = document.getElementById('hs_new_username');
 			var name = nameInput ? nameInput.value.trim() : '';
-			if (!name) return;
-			if (self.stagedCreations.indexOf(name) === -1) {
-				self.stagedCreations.unshift(name);
-				self.markUciChanged();
+
+			if (!name) {
+				self.showHint(_('Please enter a username.'));
+				return;
 			}
+			if (!/^[A-Za-z0-9][A-Za-z0-9_.-]*$/.test(name)) {
+				self.showHint(_('Username may only contain letters, digits, ".", "-" and "_", and must start with a letter or digit.'));
+				return;
+			}
+			var exists = (self.rawUsers || []).some(function(u) {
+				return u === name || (u && typeof u === 'object' && (u.name === name || u.username === name));
+			});
+			if (exists) {
+				self.showHint(_('A user with this name already exists.'));
+				return;
+			}
+			if (self.pendingOps.some(function(o) { return o.op === 'create' && o.name === name; })) {
+				self.showHint(_('This user is already staged for creation.'));
+				return;
+			}
+
+			self.clearHint();
 			if (nameInput) nameInput.value = '';
-			self.renderTableRows();
+			self.addOp({ op: 'create', name: name });
 		};
 
 		var nameInput = E('input', {
 			'type': 'text',
 			'id': 'hs_new_username',
 			'class': 'cbi-input-text',
-			'placeholder': 'alice, bob, family, work',
-			'style': 'width:240px;margin-right:8px;',
+			'placeholder': self.isRunning ? 'alice, bob, family, work' : _('Service not running, unable to create user'),
+			'disabled': !self.isRunning ? 'disabled' : null,
+			'style': 'width:280px;margin-right:8px;' + (!self.isRunning ? 'background-color:#f1f5f9 !important;color:#94a3b8 !important;cursor:not-allowed !important;border-color:#cbd5e1 !important;' : ''),
 			'keydown': function(ev) {
 				if (ev.key === 'Enter') {
 					ev.preventDefault();
@@ -174,12 +275,20 @@ return view.extend({
 			}
 		});
 
+		var createBtn = E('button', {
+			'class': 'btn cbi-button cbi-button-action',
+			'disabled': !self.isRunning ? 'disabled' : null,
+			'title': !self.isRunning ? _('Headscale service is not running') : '',
+			'style': (!self.isRunning ? 'opacity:0.5 !important;cursor:not-allowed !important;pointer-events:none !important;' : ''),
+			'click': self.isRunning ? handleAddUser : null
+		}, [ _('Create User') ]);
+
 		self.tableElement = E('table', { 'class': 'table', 'style': 'width:100%;' }, [
 			E('tr', { 'class': 'tr table-titles' }, [
 				E('th', { 'class': 'th center', 'style': 'width:70px;' }, [ _('ID') ]),
 				E('th', { 'class': 'th' }, [ _('Username') ]),
 				E('th', { 'class': 'th center', 'style': 'width:200px;' }, [ _('Created At') ]),
-				E('th', { 'class': 'th center nowrap cbi-section-actions', 'style': 'width:120px;' }, [ _('Actions') ])
+				E('th', { 'class': 'th center nowrap cbi-section-actions', 'style': 'width:120px;' }, [ _('Action') ])
 			])
 		]);
 
@@ -188,7 +297,7 @@ return view.extend({
 		return E('div', { 'class': 'cbi-map' }, [
 			E('h2', {}, [ _('Headscale - Users') ]),
 			E('div', { 'class': 'cbi-map-descr' }, [
-				_('Manage Headscale users (namespaces) for segmenting registered nodes and generating authentication keys.')
+				_('Manage Headscale users (namespaces) to isolate nodes and generate credentials.')
 			]),
 			E('div', { 'class': 'cbi-section' }, [
 				E('h3', {}, [ _('Create New User') ]),
@@ -197,11 +306,11 @@ return view.extend({
 						E('label', { 'class': 'cbi-value-title' }, [ _('Username') ]),
 						E('div', { 'class': 'cbi-value-field' }, [
 							nameInput,
-							E('button', {
-								'class': 'btn cbi-button cbi-button-action',
-								'click': handleAddUser
-							}, [ _('Create User') ])
+							createBtn
 						])
+					]),
+					E('div', { 'class': 'cbi-value' }, [
+						E('div', { 'class': 'cbi-value-field' }, [ self.hintElement ])
 					])
 				])
 			]),
@@ -214,45 +323,84 @@ return view.extend({
 
 	handleSave: function(ev) {
 		var self = this;
-		var tasks = [];
-
-		Object.keys(self.stagedDeletions).forEach(function(uName) {
-			tasks.push(callDeleteUser(uName));
-		});
-
-		self.stagedCreations.forEach(function(uName) {
-			tasks.push(callCreateUser(uName));
-		});
-
-		return Promise.all(tasks).then(function(results) {
-			(results || []).forEach(function(res) {
-				if (res && res.code && res.code !== 0) {
-					ui.addNotification(null, E('p', {}, [ _('Operation failed: ') + (res.message || _('Unknown error')) ]), 'danger');
-				}
-			});
-			self.stagedCreations = [];
-			self.stagedDeletions = {};
-			self.markUciChanged();
-			return uci.save().then(function() {
-				return callListUsers().then(function(data) {
-					self.rawUsers = Array.isArray(data) ? data : ((data && data.users) ? data.users : []);
-					self.renderTableRows();
-				});
-			});
-		});
+		if (ev && ev.preventDefault) ev.preventDefault();
+		// Save only: keep the staged operations pending, do not apply
+		// anything to the headscale service.
+		return self.stageOps();
 	},
 
 	handleSaveApply: function(ev, mode) {
 		var self = this;
-		return self.handleSave(ev).then(function() {
-			return ui.changes.apply(mode == '0');
+		if (ev && ev.preventDefault) ev.preventDefault();
+
+		return self.stageOps().then(function() {
+			/* The "Unsaved Changes" indicator is global: flush the staged
+			 * work of ALL headscale pages (users, pre-auth keys, ACL),
+			 * not just this page's queue. */
+			if (!headscale_staging.hasStaged())
+				return Promise.resolve(ui.changes.apply(mode != '1'));
+
+			return headscale_staging.executeAll().then(function() {
+				/* Everything executed by the headscale service. Run the
+				 * STANDARD LuCI apply flow: commits the staging delta (its
+				 * leftovers are cleaned up by the init script reload),
+				 * shows the countdown modal, clears the "Unsaved Changes"
+				 * indicator and reloads the page.
+				 * mode '1' is the "Apply unchecked" combo variant. */
+				return Promise.resolve(ui.changes.apply(mode != '1'));
+			}).catch(function(err) {
+				if (!err || !err.plan) {
+					ui.addNotification(null, E('p', {}, [ _('Error: ') + _(err && err.message ? err.message : err) ]), 'danger');
+					return;
+				}
+				/* Keep the operations that did not run staged for a retry. */
+				return headscale_staging.restageRemaining(err).then(function() {
+					self.syncFromUCI();
+					self.renderTableRows();
+					ui.addNotification(null, E('p', {}, [
+						_('Failed to apply operation #%d (%s): %s').format(
+							(err.appliedCount || 0) + 1,
+							headscale_staging.scopeLabel(err.scope),
+							_(err.message || err))
+					]), 'danger');
+				});
+			});
+		}).catch(function(err) {
+			ui.addNotification(null, E('p', {}, [ _('Error: ') + _(err.message || err) ]), 'danger');
 		});
 	},
 
-	handleReset: function(ev) {
-		this.stagedCreations = [];
-		this.stagedDeletions = {};
-		this.renderTableRows();
-		return uci.unload('headscale');
+	addFooter: function() {
+		var saveApplyBtn = new ui.ComboButton('0', {
+			0: [ _('Save & Apply') ],
+			1: [ _('Apply unchecked') ]
+		}, {
+			classes: {
+				0: 'btn cbi-button cbi-button-apply important',
+				1: 'btn cbi-button cbi-button-negative important'
+			},
+			click: ui.createHandlerFn(this, 'handleSaveApply')
+		}).render();
+
+		return E('div', { 'class': 'cbi-page-actions' }, [
+			saveApplyBtn,
+			' ',
+			E('button', {
+				'class': 'btn cbi-button cbi-button-save',
+				'click': ui.createHandlerFn(this, 'handleSave')
+			}, [ _('Save') ]),
+			' ',
+			E('button', {
+				'class': 'btn cbi-button cbi-button-reset',
+				'click': function(ev) {
+					ev.preventDefault();
+					// Standard LuCI revert: wipes all pending uci deltas
+					// (incl. the staged operations). ui.js reloads the page
+					// once the revert completed; revert() itself does not
+					// return a promise, so there is nothing to chain on.
+					ui.changes.revert();
+				}
+			}, [ _('Restore') ])
+		]);
 	}
 });

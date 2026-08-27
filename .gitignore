@@ -5,3 +5,5 @@
 *.pyc
 __pycache__/
 compile_lmo.py
+CLAUDE.md
+tools/
